@@ -1,0 +1,33 @@
+#공통 설정
+
+# server
+server:
+  port: "8080"
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      force: true
+  error:
+    include-stacktrace: always
+    include-trace-on-error: true
+
+
+  
+## logging
+#logging:
+#  level:
+#    root: debug
+#    jdbc:
+#      audit: off
+#      connection: off
+#      resultset: debug
+#      resultsettable: debug
+#      sqlonly: debug
+#      sqltiming: debug
+      
+spring:
+  profiles:
+    active : local
+
+
