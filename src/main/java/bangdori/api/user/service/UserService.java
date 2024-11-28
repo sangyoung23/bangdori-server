@@ -1,15 +1,11 @@
 package bangdori.api.user.service;
 
 import bangdori.api.comm.Constants;
-import bangdori.api.comm.ErrorCode;
-import bangdori.api.comm.exception.InvalidException;
-import bangdori.api.user.dto.UserInfoDTO;
+import bangdori.api.user.dto.UserInfoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import bangdori.api.user.entity.UserInfo;
 import bangdori.api.user.repository.UserRepository;
 
@@ -45,16 +41,16 @@ public class UserService {
      *
      * @return
      */
-    public UserInfoDTO getUserById(String id) {
+    public UserInfoDto getUserById(String id) {
         Optional<UserInfo> userInfo = userRepository.findById(id);
 
         if(userInfo.isPresent()){
 
-            return new ObjectMapper().convertValue(userInfo.getClass(), UserInfoDTO.class);
+            return new ObjectMapper().convertValue(userInfo.getClass(), UserInfoDto.class);
 
         }else{
             // null 처리를 이렇게 하는게 맞는가..확인이 필요..
-            return new UserInfoDTO();
+            return new UserInfoDto();
         }
 
     }

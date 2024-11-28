@@ -10,7 +10,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfoDTO {
+public class UserInfoDto {
 
     private Long userNo;
     private Long corpNo;  // 외래키 'CORP_NO'만 필요
