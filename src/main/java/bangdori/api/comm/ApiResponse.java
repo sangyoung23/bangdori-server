@@ -11,9 +11,11 @@ import com.google.gson.Gson;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
+@Component
 public class ApiResponse extends HashMap<String, Object> {
 
     private static final long serialVersionUID = 1L;
