@@ -16,7 +16,7 @@ public class CodeService {
     private final CodeInfoRepository codeInfoRepository;
 
     public Map<String, List<CodeDTO>> getGroupedCommCodeList() {
-        return codeInfoRepository.findAllByUseYn("1").stream()
+        return codeInfoRepository.findAllByUseYnOrderByOrdAsc("1").stream()
                 .map(CodeDTO::fromEntity)
                 .collect(Collectors.groupingBy(CodeDTO::getCommCd));
     }
