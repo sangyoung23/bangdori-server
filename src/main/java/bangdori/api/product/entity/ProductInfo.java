@@ -90,6 +90,9 @@ public class ProductInfo {
     @Column(name = "PROD_DTL_ADDR", length = 100)
     private String prodDtlAddr;
 
+    @Column(name = "NEW_DTM", nullable = false)
+    private LocalDateTime newDtm;
+
     @Column(name = "USE_YN", length = 10, nullable = false)
     private String useYn;
 

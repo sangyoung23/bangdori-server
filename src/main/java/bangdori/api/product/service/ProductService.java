@@ -16,13 +16,13 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public List<ProductDTO> getProductList() {
-        return productRepository.findAllByUseYn("1").stream()
+        return productRepository.findAllByUseYnOrderByNewDtmDesc("1").stream()
                 .map(ProductDTO::fromEntity)
                 .collect(Collectors.toList());
     }
 
     public void addProdReg(ProductDTO productDTO){
         ProductInfo productInfo = new ProductInfo();
-        productInfo.set productDTO.get
+        //productInfo.set productDTO.get
     }
 }

@@ -36,7 +36,7 @@ public class ProductDTO {
     private String prodAddr;
     private String prodRoadAddr;
     private String prodDtlAddr;
-    private LocalDateTime chgDtm;
+    private LocalDateTime newDtm;
 
     public static ProductDTO fromEntity(ProductInfo productInfo) {
         return new ProductDTO(
@@ -66,7 +66,7 @@ public class ProductDTO {
                 productInfo.getProdAddr(),
                 productInfo.getProdRoadAddr(),
                 productInfo.getProdDtlAddr(),
-                productInfo.getChgDtm()
+                productInfo.getNewDtm()
         );
     }
 }
