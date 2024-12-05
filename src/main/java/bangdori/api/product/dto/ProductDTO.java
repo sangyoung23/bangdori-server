@@ -4,6 +4,8 @@ import bangdori.api.product.entity.ProductInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @Getter
 public class ProductDTO {
@@ -34,6 +36,7 @@ public class ProductDTO {
     private String prodAddr;
     private String prodRoadAddr;
     private String prodDtlAddr;
+    private LocalDateTime chgDtm;
 
     public static ProductDTO fromEntity(ProductInfo productInfo) {
         return new ProductDTO(
@@ -62,7 +65,8 @@ public class ProductDTO {
                 productInfo.getMoveInCd(),
                 productInfo.getProdAddr(),
                 productInfo.getProdRoadAddr(),
-                productInfo.getProdDtlAddr()
+                productInfo.getProdDtlAddr(),
+                productInfo.getChgDtm()
         );
     }
 }

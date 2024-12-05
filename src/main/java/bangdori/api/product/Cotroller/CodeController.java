@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import bangdori.api.comm.Constants;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +27,6 @@ public class CodeController {
     @GetMapping("/commCodes")
     public ApiResponse getCommList(@RequestParam HashMap<String, Object> params) {
         Map<String, List<CodeDTO>> codeList = codeService.getGroupedCommCodeList();
-        return apiResponse.addResult("LIST", codeList);
+        return apiResponse.addResult(Constants.KEY_LIST, codeList);
     }
 }

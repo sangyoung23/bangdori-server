@@ -1,14 +1,12 @@
 package bangdori.api.product.Cotroller;
 
 import bangdori.api.comm.ApiResponse;
+import bangdori.api.comm.Constants;
 import bangdori.api.product.dto.ProductDTO;
 import bangdori.api.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,5 +23,16 @@ public class ProductController {
     public ApiResponse getProductList(@RequestParam HashMap<String, Object> params) {
         List<ProductDTO> productList = productService.getProductList();
         return apiResponse.addResult("LIST", productList);
+    }
+
+    @PostMapping("/addProdReg")
+    public ApiResponse addProdReg(@RequestBody ProductDTO productDTO) {
+
+        try{
+            productService.addProdReg(productDTO);
+        } catch (Exception e) {
+            return apiResponse.error();
+        }
+        return apiResponse.success();
     }
 }
