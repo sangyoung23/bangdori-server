@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,64 +21,19 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductRemarksInfoRepository productRemarksInfoRepository;
 
+public List<ProductDTO> getProductList() {
+    List<ProductInfo> products = productRepository.findAllByUseYnOrderByNewDtmDesc("1");
 
-    public List<ProductDTO> getProductList() {
-        return productRepository.findAllByUseYnOrderByNewDtmDesc("1").stream()
-                .map(ProductDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
+    return products.stream().map(product -> {
+        // ProductInfo 엔티티를 DTO로 변환하면서, 해당 ProductInfo에 해당하는 모든 remarkCd를 가져오기
+        List<String> remarkCds = productRemarksInfoRepository.findByProductInfoProdNo(product.getProdNo())
+                .stream()
+                .map(ProductRemarksInfo::getRemarkCd)
+                .collect(Collectors.toList());  // 여러 개의 remarkCd를 리스트로 수집
 
-//    @Transactional
-//    public void addProdReg(ProductDTO productDTO){
-//        ProductInfo productInfo = ProductInfo.builder()
-//                .tradeType(productDTO.getTradeType())
-//                .title(productDTO.getTitle())
-//                .type(productDTO.getType())
-//                .statusCd("10")
-//                .entrancePwd(productDTO.getEntrancePwd())
-//                .unitPwd(productDTO.getUnitPwd())
-//                .phoneNo1(productDTO.getPhoneNo1())
-//                .phoneNo2(productDTO.getPhoneNo2())
-//                .unitNo(productDTO.getUnitNo())
-//                .etc(productDTO.getEtc())
-//                .deposit(productDTO.getDeposit())
-//                .monthlyRent(productDTO.getMonthlyRent())
-//                .salePrice(productDTO.getSalePrice())
-//                .depositTotal(productDTO.getDepositTotal())
-//                .rentTotal(productDTO.getRentTotal())
-//                .premiumFee(productDTO.getPremiumFee())
-//                .premiumYn(productDTO.getPremiumYn())
-//                .directionCd(productDTO.getDirectionCd())
-//                .rcmCd(productDTO.getRcmCd())
-//                .roomCd(productDTO.getRoomCd())
-//                .bathCd(productDTO.getBathCd())
-//                .moveInCd(productDTO.getMoveInCd())
-//                .prodAddr(productDTO.getProdAddr())
-//                .prodRoadAddr(productDTO.getProdRoadAddr())
-//                .prodDtlAddr(productDTO.getProdDtlAddr())
-//                .newDtm(LocalDateTime.now()) // 시스템에서 현재 시간 설정
-//                .useYn("1")
-//                //.regUserId(productDTO.getRegUserId())
-//                .regUserId(1234L)
-//                .regDtm(LocalDateTime.now()) // 시스템에서 현재 시간 설정
-//                //.chgUserId(productDTO.getChgUserId())
-//                .chgUserId(1234L)
-//                .chgDtm(LocalDateTime.now()) // 시스템에서 현재 시간 설정
-//                .build();
-//
-//        ProductInfo savedProductInfo =productRepository.save(productInfo);
-//        ProductRemarksInfo remarksInfo = ProductRemarksInfo.builder()
-//                .productInfo(savedProductInfo)  // 위에서 저장한 ProductInfo 객체를 연결
-//                .remarkCd(remarksDto.getRemarkCd())
-//                .useYn(remarksDto.getUseYn())
-//                .regDtm(LocalDateTime.now())
-//                .build();
-//
-//        productRemarksInfoRepository.save(remarksInfo);
-//                System.out.println("productInfo   "+ productInfo.getTitle());
-//
-//    }
-
+        return ProductDTO.fromEntity(product, remarkCds); // remarkCd 리스트를 전달하여 DTO 생성
+    }).collect(Collectors.toList());
+}
 
     @Transactional
     public void saveProduct(ProductInfo productInfo, List<ProductRemarksInfo> remarksInfoList) {
@@ -95,5 +51,18 @@ public class ProductService {
                 .collect(Collectors.toList());
         // ProductRemarksInfo 저장
         productRemarksInfoRepository.saveAll(updatedRemarksInfoList);
+    }
+
+
+    @Transactional
+    public void updateNewDtm(Long prodNo) {
+        ProductInfo productInfo = productRepository.findById(prodNo).orElse(null);
+        productInfo.updateNewDtm();
+    }
+
+    @Transactional
+    public void deleteProduct(Long prodNo) {
+        ProductInfo productInfo = productRepository.findById(prodNo).orElse(null);
+        productInfo.updateUseYn("0");
     }
 }

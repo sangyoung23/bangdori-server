@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class ProductController {
     @GetMapping("/products")
     public ApiResponse getProductList(@RequestParam HashMap<String, Object> params) {
         List<ProductDTO> productList = productService.getProductList();
+//        System.out.println("check  " + productList.get(0).getProductRemarksInfos().get(0));
         return apiResponse.addResult("LIST", productList);
     }
 
@@ -68,6 +70,32 @@ public class ProductController {
             productService.saveProduct(productInfo, remarksInfoList);
         } catch (Exception e) {
             throw new RuntimeException(e); // return apiResponse.error();
+        }
+        return apiResponse.success();
+    }
+
+    /**
+     * 매물 최신일자 Update
+     */
+    @PostMapping("/updateNewDtm")
+    public ApiResponse updateNewDtm(@RequestBody Map<String, Object> prams) {
+        try {
+            productService.updateNewDtm( Long.parseLong(prams.get("prodNo").toString()));
+        } catch (Exception e) {
+            return apiResponse.error();
+        }
+        return apiResponse.success();
+    }
+
+    /**
+     * 매물 Delete
+     */
+    @PostMapping("/deleteProduct")
+    public ApiResponse deleteProduct(@RequestBody Map<String, Object> prams) {
+        try {
+            productService.deleteProduct( Long.parseLong(prams.get("prodNo").toString()));
+        } catch (Exception e) {
+            return apiResponse.error();
         }
         return apiResponse.success();
     }

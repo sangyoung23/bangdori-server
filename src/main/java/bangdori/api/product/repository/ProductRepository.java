@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<ProductInfo, Long> {
     List<ProductInfo> findAllByUseYnOrderByNewDtmDesc(String useYn);
+
 }

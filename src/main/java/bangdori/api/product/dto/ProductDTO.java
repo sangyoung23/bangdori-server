@@ -1,10 +1,13 @@
 package bangdori.api.product.dto;
 
 import bangdori.api.product.entity.ProductInfo;
+import bangdori.api.product.entity.ProductRemarksInfo;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -41,7 +44,10 @@ public class ProductDTO {
     private Long regUserId;
     private Long chgUserId;
 
-    public static ProductDTO fromEntity(ProductInfo productInfo) {
+    private List<String> remarkCd;
+
+
+    public static ProductDTO fromEntity(ProductInfo productInfo,List<String> remarkCd) {
         return new ProductDTO(
                 productInfo.getProdNo(),
                 productInfo.getTradeType(),
@@ -72,7 +78,8 @@ public class ProductDTO {
                 productInfo.getProdDtlAddr(),
                 productInfo.getNewDtm(),
                 productInfo.getRegUserId(),
-                productInfo.getChgUserId()
+                productInfo.getChgUserId(),
+                remarkCd
         );
     }
 }

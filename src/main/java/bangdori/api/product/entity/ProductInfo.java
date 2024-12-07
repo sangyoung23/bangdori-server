@@ -201,4 +201,12 @@ public class ProductInfo {
         this.chgUserId = chgUserId;
         this.chgDtm = chgDtm;
     }
+
+    public void updateNewDtm() {
+        this.newDtm = LocalDateTime.now();
+    }
+
+    public  void updateUseYn(String useYn) {
+        this.useYn = useYn;
+    }
 }
