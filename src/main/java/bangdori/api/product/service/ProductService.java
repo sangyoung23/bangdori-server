@@ -82,6 +82,7 @@ public class ProductService {
     @Transactional
     public void saveProduct(ProductInfo productInfo, List<ProductRemarksInfo> remarksInfoList) {
         // ProductInfo 저장
+
         ProductInfo savedProductInfo = productRepository.save(productInfo);
 
         List<ProductRemarksInfo> updatedRemarksInfoList = remarksInfoList.stream()

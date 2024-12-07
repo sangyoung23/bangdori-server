@@ -1,5 +1,7 @@
 package bangdori.api.product.entity;
 
+import bangdori.api.user.entity.CorpInfo;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +24,7 @@ public class ProductRemarksInfo {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROD_NO", nullable = false)
+    @JsonBackReference
     private ProductInfo productInfo; // FK → TB_PRODUCT_INFO
 
     @Column(name = "REMARK_CD", length = 50, nullable = false)

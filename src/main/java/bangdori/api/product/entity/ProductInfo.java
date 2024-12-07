@@ -1,11 +1,14 @@
 package bangdori.api.product.entity;
 
 import bangdori.api.product.dto.ProductDTO;
+import bangdori.api.user.entity.UserInfo;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Entity
@@ -114,6 +117,9 @@ public class ProductInfo {
     @Column(name = "CHG_DTM")
     private LocalDateTime chgDtm;
 
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY)
+    @JsonBackReference  // 순환 참조 방지
+    private List<ProductRemarksInfo> productRemarksInfos;
 
     // ProductDto로부터 ProductInfo 엔티티를 생성하는 @Builder를 사용한 fromDto 메서드
     public static ProductInfo fromDto(ProductDTO dto) {
@@ -146,7 +152,9 @@ public class ProductInfo {
                 .prodDtlAddr(dto.getProdDtlAddr())
                 .newDtm(dto.getNewDtm())
                 .useYn("1") // 기본값 설정
-                .regDtm(LocalDateTime.now()) // 등록일시 설정
+                .regDtm(LocalDateTime.now())
+                .chgUserId(dto.getChgUserId())
+                .regUserId(dto.getRegUserId())// 등록일시 설정
                 .build();
     }
 
@@ -160,6 +168,7 @@ public class ProductInfo {
                        String prodDtlAddr, LocalDateTime newDtm, String useYn, String rmk,
                        Long regUserId, LocalDateTime regDtm, Long chgUserId, LocalDateTime chgDtm) {
         this.prodNo = prodNo;
+        this.tradeType = tradeType;
         this.title = title;
         this.type = type;
         this.statusCd = statusCd;

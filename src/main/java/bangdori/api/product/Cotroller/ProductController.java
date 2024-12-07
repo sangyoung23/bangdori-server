@@ -45,27 +45,31 @@ public class ProductController {
 
 
     @PostMapping("/addProdReg")
-    public void addProdReg(@RequestBody ProductRequest productRequest) {
-        // ProductDto를 엔티티로 변환
-        System.out.println("ㅇㅇㅇ ?  "+productRequest.getProductDto().getTitle());
-        ProductDTO productDto = productRequest.getProductDto();
-        ProductInfo productInfo = ProductInfo.fromDto(productDto);
+    public ApiResponse addProdReg(@RequestBody ProductRequest productRequest) {
 
-        // remarks 배열을 처리하여 ProductRemarksInfo 리스트로 변환
-        List<String> remarkCds = productRequest.getRemarkCds();
+        try {
+            ProductDTO productDto = productRequest.getProductDto();
+            ProductInfo productInfo = ProductInfo.fromDto(productDto);
 
-        List<ProductRemarksInfo> remarksInfoList = remarkCds.stream()
-                .map(remarkCd -> ProductRemarksInfo.builder()
-                        .productInfo(productInfo)   // 해당 productInfo 설정
-                        .remarkCd(remarkCd)         // remarkCd 값 설정
-                        .useYn("Y")                 // 기본값을 Y로 설정, 필요에 따라 수정 가능
-                        .regDtm(LocalDateTime.now()) // 등록일시
-                        .build())
-                .collect(Collectors.toList());
+            // remarks 배열을 처리하여 ProductRemarksInfo 리스트로 변환
+            List<String> remarkCds = productRequest.getRemarkCds();
 
-        // ProductInfo와 ProductRemarksInfo 리스트를 저장
-        //productService.addProdReg(productInfo, remarksInfoList);
-        productService.saveProduct(productInfo, remarksInfoList);
+            List<ProductRemarksInfo> remarksInfoList = remarkCds.stream()
+                    .map(remarkCd -> ProductRemarksInfo.builder()
+                            .productInfo(productInfo)   // 해당 productInfo 설정
+                            .remarkCd(remarkCd)         // remarkCd 값 설정
+                            .useYn("Y")                 // 기본값을 Y로 설정, 필요에 따라 수정 가능
+                            .regDtm(LocalDateTime.now()) // 등록일시
+                            .build())
+                    .collect(Collectors.toList());
+
+            // ProductInfo와 ProductRemarksInfo 리스트를 저장
+
+            productService.saveProduct(productInfo, remarksInfoList);
+        } catch (Exception e) {
+            throw new RuntimeException(e); // return apiResponse.error();
+        }
+        return apiResponse.success();
     }
 
 }

@@ -38,6 +38,8 @@ public class ProductDTO {
     private String prodRoadAddr;
     private String prodDtlAddr;
     private LocalDateTime newDtm;
+    private Long regUserId;
+    private Long chgUserId;
 
     public static ProductDTO fromEntity(ProductInfo productInfo) {
         return new ProductDTO(
@@ -68,7 +70,9 @@ public class ProductDTO {
                 productInfo.getProdAddr(),
                 productInfo.getProdRoadAddr(),
                 productInfo.getProdDtlAddr(),
-                productInfo.getNewDtm()
+                productInfo.getNewDtm(),
+                productInfo.getRegUserId(),
+                productInfo.getChgUserId()
         );
     }
 }

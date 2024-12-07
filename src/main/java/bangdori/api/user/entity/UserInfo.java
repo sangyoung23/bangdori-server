@@ -1,5 +1,6 @@
 package bangdori.api.user.entity;
 
+import bangdori.api.product.entity.ProductInfo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sun.istack.NotNull;
 import lombok.*;
@@ -7,6 +8,7 @@ import lombok.*;
 //import javax.persistence.*;
 import jakarta.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -25,6 +27,10 @@ public class UserInfo {
     @JoinColumn(name = "CORP_NO", referencedColumnName = "CORP_NO")// 외래키 corp_no
     @JsonBackReference
     private CorpInfo corpInfo;
+
+//    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY)
+//    @JsonBackReference  // 순환 참조 방지
+//    private List<ProductInfo> productInfos;
 
     @NotNull
     @Column(name = "ROLE_CD")
