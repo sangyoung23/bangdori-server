@@ -12,9 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -32,17 +30,6 @@ public class ProductController {
         return apiResponse.addResult("LIST", productList);
     }
 
-//    @PostMapping("/addProdReg")
-//    public ApiResponse addProdReg(@RequestBody ProductDTO productDTO) {
-//
-//        try{
-//            productService.addProdReg(productDTO);
-//        } catch (Exception e) {
-//            return apiResponse.error();
-//        }
-//        return apiResponse.success();
-//    }
-
 
 
 
@@ -54,7 +41,8 @@ public class ProductController {
             ProductInfo productInfo = ProductInfo.fromDto(productDto);
 
             // remarks 배열을 처리하여 ProductRemarksInfo 리스트로 변환
-            List<String> remarkCds = productRequest.getRemarkCds();
+            List<String> remarkCds = Optional.ofNullable(productRequest.getRemarkCds())
+                    .orElse(Collections.emptyList());
 
             List<ProductRemarksInfo> remarksInfoList = remarkCds.stream()
                     .map(remarkCd -> ProductRemarksInfo.builder()
