@@ -14,6 +14,7 @@ public class ProductDTO {
     private String tradeType;
     private String title;
     private String type;
+    private String statusCd;
     private String entrancePwd;
     private String unitPwd;
     private String phoneNo1;
@@ -44,6 +45,7 @@ public class ProductDTO {
                 productInfo.getTradeType(),
                 productInfo.getTitle(),
                 productInfo.getType(),
+                productInfo.getStatusCd(),
                 productInfo.getEntrancePwd(),
                 productInfo.getUnitPwd(),
                 productInfo.getPhoneNo1(),

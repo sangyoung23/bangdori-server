@@ -1,13 +1,16 @@
 package bangdori.api.product.entity;
 
+import bangdori.api.product.dto.ProductDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @Table(name = "TB_PRODUCT_INFO")
+@NoArgsConstructor
 public class ProductInfo {
 
     @Id
@@ -110,4 +113,83 @@ public class ProductInfo {
 
     @Column(name = "CHG_DTM")
     private LocalDateTime chgDtm;
+
+
+    // ProductDto로부터 ProductInfo 엔티티를 생성하는 @Builder를 사용한 fromDto 메서드
+    public static ProductInfo fromDto(ProductDTO dto) {
+        return ProductInfo.builder()
+                //.prodNo(dto.getProdNo()) //insert 할때 오류나는데...
+                .tradeType(dto.getTradeType())
+                .title(dto.getTitle())
+                .type(dto.getType())
+                .statusCd(dto.getStatusCd())
+                .entrancePwd(dto.getEntrancePwd())
+                .unitPwd(dto.getUnitPwd())
+                .phoneNo1(dto.getPhoneNo1())
+                .phoneNo2(dto.getPhoneNo2())
+                .unitNo(dto.getUnitNo())
+                .etc(dto.getEtc())
+                .deposit(dto.getDeposit())
+                .monthlyRent(dto.getMonthlyRent())
+                .salePrice(dto.getSalePrice())
+                .depositTotal(dto.getDepositTotal())
+                .rentTotal(dto.getRentTotal())
+                .premiumFee(dto.getPremiumFee())
+                .premiumYn(dto.getPremiumYn())
+                .directionCd(dto.getDirectionCd())
+                .rcmCd(dto.getRcmCd())
+                .roomCd(dto.getRoomCd())
+                .bathCd(dto.getBathCd())
+                .moveInCd(dto.getMoveInCd())
+                .prodAddr(dto.getProdAddr())
+                .prodRoadAddr(dto.getProdRoadAddr())
+                .prodDtlAddr(dto.getProdDtlAddr())
+                .newDtm(dto.getNewDtm())
+                .useYn("1") // 기본값 설정
+                .regDtm(LocalDateTime.now()) // 등록일시 설정
+                .build();
+    }
+
+    @Builder
+    public ProductInfo(Long prodNo, String tradeType, String title, String type, String statusCd,
+                       String entrancePwd, String unitPwd, String phoneNo1, String phoneNo2,
+                       String unitNo, String etc, String deposit, String monthlyRent,
+                       String salePrice, String depositTotal, String rentTotal, String premiumFee,
+                       String premiumYn, String directionCd, String rcmCd, String roomCd,
+                       String bathCd, String moveInCd, String prodAddr, String prodRoadAddr,
+                       String prodDtlAddr, LocalDateTime newDtm, String useYn, String rmk,
+                       Long regUserId, LocalDateTime regDtm, Long chgUserId, LocalDateTime chgDtm) {
+        this.prodNo = prodNo;
+        this.title = title;
+        this.type = type;
+        this.statusCd = statusCd;
+        this.entrancePwd = entrancePwd;
+        this.unitPwd = unitPwd;
+        this.phoneNo1 = phoneNo1;
+        this.phoneNo2 = phoneNo2;
+        this.unitNo = unitNo;
+        this.etc = etc;
+        this.deposit = deposit;
+        this.monthlyRent = monthlyRent;
+        this.salePrice = salePrice;
+        this.depositTotal = depositTotal;
+        this.rentTotal = rentTotal;
+        this.premiumFee = premiumFee;
+        this.premiumYn = premiumYn;
+        this.directionCd = directionCd;
+        this.rcmCd = rcmCd;
+        this.roomCd = roomCd;
+        this.bathCd = bathCd;
+        this.moveInCd = moveInCd;
+        this.prodAddr = prodAddr;
+        this.prodRoadAddr = prodRoadAddr;
+        this.prodDtlAddr = prodDtlAddr;
+        this.newDtm = newDtm;
+        this.useYn = useYn;
+        this.rmk = rmk;
+        this.regUserId = regUserId;
+        this.regDtm = regDtm;
+        this.chgUserId = chgUserId;
+        this.chgDtm = chgDtm;
+    }
 }
