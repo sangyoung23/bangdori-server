@@ -150,7 +150,7 @@ public class ProductInfo {
                 .prodAddr(dto.getProdAddr())
                 .prodRoadAddr(dto.getProdRoadAddr())
                 .prodDtlAddr(dto.getProdDtlAddr())
-                .newDtm(dto.getNewDtm())
+                .newDtm(LocalDateTime.now())
                 .useYn("1") // 기본값 설정
                 .regDtm(LocalDateTime.now())
                 .chgUserId(dto.getChgUserId())

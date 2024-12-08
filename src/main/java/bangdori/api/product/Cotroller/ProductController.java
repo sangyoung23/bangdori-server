@@ -41,7 +41,7 @@ public class ProductController {
 
         try {
             ProductInfo productInfo = ProductInfo.fromDto(productDto);
-
+ 
             // remarks 배열 처리
             List<ProductRemarksInfo> remarksInfoList = Optional.ofNullable(remarkCds)
                     .orElse(Collections.emptyList())
