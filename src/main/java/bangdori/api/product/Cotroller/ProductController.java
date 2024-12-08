@@ -1,15 +1,15 @@
 package bangdori.api.product.Cotroller;
 
 import bangdori.api.comm.ApiResponse;
-import bangdori.api.comm.Constants;
 import bangdori.api.product.dto.ProductDTO;
-import bangdori.api.product.dto.ProductRequest;
+import bangdori.api.product.entity.ProductImageInfo;
 import bangdori.api.product.entity.ProductInfo;
 import bangdori.api.product.entity.ProductRemarksInfo;
+import bangdori.api.product.service.FileStorageService;
 import bangdori.api.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,6 +22,7 @@ public class ProductController {
 
     private final ProductService productService;
     private final ApiResponse apiResponse;
+    private final FileStorageService fileStorageService;
 
     @GetMapping("/products")
     public ApiResponse getProductList(@RequestParam HashMap<String, Object> params) {
@@ -34,33 +35,51 @@ public class ProductController {
 
 
     @PostMapping("/addProdReg")
-    public ApiResponse addProdReg(@RequestBody ProductRequest productRequest) {
+    public ApiResponse addProdReg(@RequestPart("productDto") ProductDTO productDto,
+                                  @RequestPart(value = "remarkCds", required = false) List<String> remarkCds,
+                                  @RequestPart(value = "imges", required = false) List<MultipartFile> imges) {
 
         try {
-            ProductDTO productDto = productRequest.getProductDto();
             ProductInfo productInfo = ProductInfo.fromDto(productDto);
 
-            // remarks 배열을 처리하여 ProductRemarksInfo 리스트로 변환
-            List<String> remarkCds = Optional.ofNullable(productRequest.getRemarkCds())
-                    .orElse(Collections.emptyList());
-
-            List<ProductRemarksInfo> remarksInfoList = remarkCds.stream()
+            // remarks 배열 처리
+            List<ProductRemarksInfo> remarksInfoList = Optional.ofNullable(remarkCds)
+                    .orElse(Collections.emptyList())
+                    .stream()
                     .map(remarkCd -> ProductRemarksInfo.builder()
-                            .productInfo(productInfo)   // 해당 productInfo 설정
-                            .remarkCd(remarkCd)         // remarkCd 값 설정
-                            .useYn("Y")                 // 기본값을 Y로 설정, 필요에 따라 수정 가능
-                            .regDtm(LocalDateTime.now()) // 등록일시
+                            .productInfo(productInfo)
+                            .remarkCd(remarkCd)
+                            .useYn("Y")
+                            .regDtm(LocalDateTime.now())
                             .build())
                     .collect(Collectors.toList());
 
-            // ProductInfo와 ProductRemarksInfo 리스트를 저장
+            // 이미지를 처리하여 ProductImageInfo 생성
+            List<ProductImageInfo> imageInfoList = Optional.ofNullable(imges)
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .map(image -> {
+                        String fileName = fileStorageService.saveFile(image); // 파일 저장
+                        return ProductImageInfo.builder()
+                                .productInfo(productInfo)
+                                .managementFileName(fileName)
+                                .realFileName(image.getOriginalFilename())
+                                .useYn("Y")
+                                .regDtm(LocalDateTime.now())
+                                .build();
+                    })
+                    .collect(Collectors.toList());
 
-            productService.saveProduct(productInfo, remarksInfoList);
+            // ProductInfo, ProductRemarksInfo, ProductImageInfo 저장
+            productService.saveProduct(productInfo, remarksInfoList, imageInfoList);
+            // ProductInfo와 ProductRemarksInfo 리스트를 저장
         } catch (Exception e) {
             throw new RuntimeException(e); // return apiResponse.error();
         }
         return apiResponse.success();
     }
+
+
 
     /**
      * 매물 최신일자 Update

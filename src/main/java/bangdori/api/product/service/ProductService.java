@@ -1,8 +1,10 @@
 package bangdori.api.product.service;
 
 import bangdori.api.product.dto.ProductDTO;
+import bangdori.api.product.entity.ProductImageInfo;
 import bangdori.api.product.entity.ProductInfo;
 import bangdori.api.product.entity.ProductRemarksInfo;
+import bangdori.api.product.repository.ProductImageInfoRepository;
 import bangdori.api.product.repository.ProductRemarksInfoRepository;
 import bangdori.api.product.repository.ProductRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductRemarksInfoRepository productRemarksInfoRepository;
+    private final ProductImageInfoRepository productImageInfoRepository;
+    private final FileStorageService fileStorageService;
 
 public List<ProductDTO> getProductList() {
     List<ProductInfo> products = productRepository.findAllByUseYnOrderByNewDtmDesc("1");
@@ -36,7 +40,7 @@ public List<ProductDTO> getProductList() {
 }
 
     @Transactional
-    public void saveProduct(ProductInfo productInfo, List<ProductRemarksInfo> remarksInfoList) {
+    public void saveProduct(ProductInfo productInfo, List<ProductRemarksInfo> remarksInfoList , List<ProductImageInfo> imageInfoList) {
         // ProductInfo 저장
 
         ProductInfo savedProductInfo = productRepository.save(productInfo);
@@ -51,6 +55,18 @@ public List<ProductDTO> getProductList() {
                 .collect(Collectors.toList());
         // ProductRemarksInfo 저장
         productRemarksInfoRepository.saveAll(updatedRemarksInfoList);
+
+        // 3. ProductImageInfo 저장
+        List<ProductImageInfo> updatedImageInfoList = imageInfoList.stream()
+                .map(imageInfo -> ProductImageInfo.builder()
+                        .productInfo(savedProductInfo)
+                        .managementFileName(imageInfo.getManagementFileName())
+                        .realFileName(imageInfo.getRealFileName())
+                        .useYn("Y")
+                        .regDtm(LocalDateTime.now())
+                        .build())
+                .collect(Collectors.toList());
+        productImageInfoRepository.saveAll(updatedImageInfoList);
     }
 
 

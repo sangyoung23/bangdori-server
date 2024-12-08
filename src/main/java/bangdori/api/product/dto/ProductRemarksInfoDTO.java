@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
-public class ProductRemarksInfoDto {
+public class ProductRemarksInfoDTO {
 
     private Long seqNo;        // 일련번호
     private Long prodNo;       // 매물 정보 고유 번호
@@ -17,8 +17,8 @@ public class ProductRemarksInfoDto {
     private LocalDateTime regDtm; // 등록일시
 
     // 엔티티에서 DTO로 변환하는 메서드
-    public static ProductRemarksInfoDto fromEntity(ProductRemarksInfo productRemarksInfo) {
-        return new ProductRemarksInfoDto(
+    public static ProductRemarksInfoDTO fromEntity(ProductRemarksInfo productRemarksInfo) {
+        return new ProductRemarksInfoDTO(
                 productRemarksInfo.getSeqNo(),
                 productRemarksInfo.getProductInfo().getProdNo(),  // ProductInfo에서 prodNo를 가져옴
                 productRemarksInfo.getRemarkCd(),
