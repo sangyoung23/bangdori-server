@@ -27,6 +27,8 @@ public class ProductDTO {
     private String deposit;
     private String monthlyRent;
     private String depositAndMonthlyRent;
+    private String salePricdAndDepoAndRent;
+    private String depositAndMonthlyRentAndPreFee;
     private String salePrice;
     private String depositTotal;
     private String rentTotal;
@@ -47,7 +49,14 @@ public class ProductDTO {
     private List<String> remarkCd;
 
 
-    public static ProductDTO fromEntity(ProductInfo productInfo,List<String> remarkCd) {
+    public static ProductDTO fromEntity(ProductInfo productInfo, List<String> remarkCd) {
+        String deposit = productInfo.getDeposit() != null ? productInfo.getDeposit() : "0";
+        String monthlyRent = productInfo.getMonthlyRent() != null ? productInfo.getMonthlyRent() : "0";
+        String salePrice = productInfo.getSalePrice() != null ? productInfo.getSalePrice() : "0";
+        String depositTotal = productInfo.getDepositTotal() != null ? productInfo.getDepositTotal() : "0";
+        String rentTotal = productInfo.getRentTotal() != null ? productInfo.getRentTotal() : "0";
+        String premiumFee = productInfo.getPremiumFee() != null ? productInfo.getPremiumFee() : "0";
+
         return new ProductDTO(
                 productInfo.getProdNo(),
                 productInfo.getTradeType(),
@@ -60,13 +69,15 @@ public class ProductDTO {
                 productInfo.getPhoneNo2(),
                 productInfo.getUnitNo(),
                 productInfo.getEtc(),
-                productInfo.getDeposit(),
-                productInfo.getMonthlyRent(),
-                "보" + productInfo.getDeposit() + "만" + " / " +  "월" + productInfo.getMonthlyRent() + "만",
-                productInfo.getSalePrice(),
-                productInfo.getDepositTotal(),
-                productInfo.getRentTotal(),
-                productInfo.getPremiumFee(),
+                deposit,
+                monthlyRent,
+                "보증" + deposit + "만" + " / " +  "월" + monthlyRent + "만",
+                "매매" + salePrice + "만" + " / " + "보증" + depositTotal + "만" + " / " + "매매" + rentTotal + "만",
+                "보증" + deposit + "만" + " / " +  "월" + monthlyRent + "만" + " / " + "권리" + premiumFee + "만",
+                salePrice,
+                depositTotal,
+                rentTotal,
+                premiumFee,
                 productInfo.getPremiumYn(),
                 productInfo.getDirectionCd(),
                 productInfo.getRcmCd(),
