@@ -209,4 +209,36 @@ public class ProductInfo {
     public  void updateUseYn(String useYn) {
         this.useYn = useYn;
     }
+
+    public void updateFromDto(ProductDTO dto) {
+        this.tradeType = dto.getTradeType();
+        this.title = dto.getTitle();
+        this.type = dto.getType();
+        this.statusCd = dto.getStatusCd();
+        this.entrancePwd = dto.getEntrancePwd();
+        this.unitPwd = dto.getUnitPwd();
+        this.phoneNo1 = dto.getPhoneNo1();
+        this.phoneNo2 = dto.getPhoneNo2();
+        this.unitNo = dto.getUnitNo();
+        this.etc = dto.getEtc();
+        this.deposit = dto.getDeposit();
+        this.monthlyRent = dto.getMonthlyRent();
+        this.salePrice = dto.getSalePrice();
+        this.depositTotal = dto.getDepositTotal();
+        this.rentTotal = dto.getRentTotal();
+        this.premiumFee = dto.getPremiumFee();
+        this.premiumYn = dto.getPremiumYn();
+        this.directionCd = dto.getDirectionCd();
+        this.rcmCd = dto.getRcmCd();
+        this.roomCd = dto.getRoomCd();
+        this.bathCd = dto.getBathCd();
+        this.moveInCd = dto.getMoveInCd();
+        this.prodAddr = dto.getProdAddr();
+        this.prodRoadAddr = dto.getProdRoadAddr();
+        this.prodDtlAddr = dto.getProdDtlAddr();
+        this.chgUserId = dto.getChgUserId(); // 변경한 사용자 ID 업데이트
+        this.newDtm = LocalDateTime.now(); // 변경 시간 업데이트
+        this.chgDtm = LocalDateTime.now(); // 변경 시간 업데이트
+    }
+
 }

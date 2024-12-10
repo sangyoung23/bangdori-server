@@ -36,7 +36,7 @@ public class ProductImageInfo {
     private LocalDateTime regDtm; // 등록 일시
 
     // DTO로부터 엔티티를 생성하는 fromDto 메서드
-    public static ProductImageInfo fromDto(CodeDTO.ProductImageInfoDTO dto, ProductInfo productInfo) {
+    public static ProductImageInfo fromDto(ProductImageInfo dto, ProductInfo productInfo) {
         return ProductImageInfo.builder()
                 .productInfo(productInfo)
                 .managementFileName(dto.getManagementFileName())

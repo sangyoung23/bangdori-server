@@ -1,6 +1,7 @@
 package bangdori.api.product.Cotroller;
 
 import bangdori.api.comm.ApiResponse;
+import bangdori.api.comm.ErrorCode;
 import bangdori.api.product.dto.ProductDTO;
 import bangdori.api.product.entity.ProductImageInfo;
 import bangdori.api.product.entity.ProductInfo;
@@ -11,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,7 +37,13 @@ public class ProductController {
 
 
 
+    /**
+     * 매물/매매/임대 수정
+     * */
 
+    /**
+     * 매물/매매/임대 등록
+     * */
     @PostMapping("/addProdReg")
     public ApiResponse addProdReg(@RequestPart("productDto") ProductDTO productDto,
                                   @RequestPart(value = "remarkCds", required = false) List<String> remarkCds,
@@ -41,7 +51,7 @@ public class ProductController {
 
         try {
             ProductInfo productInfo = ProductInfo.fromDto(productDto);
- 
+
             // remarks 배열 처리
             List<ProductRemarksInfo> remarksInfoList = Optional.ofNullable(remarkCds)
                     .orElse(Collections.emptyList())
@@ -49,7 +59,7 @@ public class ProductController {
                     .map(remarkCd -> ProductRemarksInfo.builder()
                             .productInfo(productInfo)
                             .remarkCd(remarkCd)
-                            .useYn("Y")
+                            .useYn("1")
                             .regDtm(LocalDateTime.now())
                             .build())
                     .collect(Collectors.toList());
@@ -64,7 +74,7 @@ public class ProductController {
                                 .productInfo(productInfo)
                                 .managementFileName(fileName)
                                 .realFileName(image.getOriginalFilename())
-                                .useYn("Y")
+                                .useYn("1")
                                 .regDtm(LocalDateTime.now())
                                 .build();
                     })
@@ -72,13 +82,107 @@ public class ProductController {
 
             // ProductInfo, ProductRemarksInfo, ProductImageInfo 저장
             productService.saveProduct(productInfo, remarksInfoList, imageInfoList);
-            // ProductInfo와 ProductRemarksInfo 리스트를 저장
         } catch (Exception e) {
             throw new RuntimeException(e); // return apiResponse.error();
         }
         return apiResponse.success();
     }
 
+
+    /**
+     * 매물/매매/임대 수정
+     * */
+    @PostMapping("/udpateProdInfo")
+    public ApiResponse udpateProdInfo(@RequestPart("prodNo") String strProdNo,
+            @RequestPart("productDto") ProductDTO productDto,
+                                  @RequestPart(value = "remarkCds", required = false) List<String> remarkCds,
+                                  @RequestPart(value = "imges", required = false) List<MultipartFile> imges) {
+
+        try {
+
+            System.out.println("일단 제대로 호출되는지 확인 !");
+            // 기존 ProductInfo 조회
+
+            Long prodNo = Long.parseLong(strProdNo);
+            ProductInfo existingProductInfo = productService.findByProdNo(prodNo);
+
+            System.out.println("일단 제대로 호출되는지 확인 getProdNo !" + existingProductInfo.getProdNo());
+            System.out.println("일단 제대로 호출되는지 확인 getTitle !" + existingProductInfo.getTitle());
+            if (existingProductInfo == null) {
+                return apiResponse.setMessage(ErrorCode.PRD0001);
+            }
+
+            existingProductInfo.updateFromDto(productDto);
+
+            // remarks 배열 처리
+            List<ProductRemarksInfo> updatedRemarksInfoList = Optional.ofNullable(remarkCds)
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .map(remarkCd -> ProductRemarksInfo.builder()
+                            .productInfo(existingProductInfo) //이게 맞나....
+                            .remarkCd(remarkCd)
+                            .useYn("1")
+                            .regDtm(LocalDateTime.now())
+                            .build())
+                    .collect(Collectors.toList());
+
+            productService.updateRemarks(prodNo, updatedRemarksInfoList);
+
+
+            // 이미지를 처리하여 ProductImageInfo 생성
+            List<ProductImageInfo> imageInfoList = Optional.ofNullable(imges)
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .map(image -> {
+                        String fileName = fileStorageService.saveFile(image); // 파일 저장
+                        return ProductImageInfo.builder()
+                                .productInfo(existingProductInfo)
+                                .managementFileName(fileName)
+                                .realFileName(image.getOriginalFilename())
+                                .useYn("1")
+                                .regDtm(LocalDateTime.now())
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+
+            // ProductInfo, ProductRemarksInfo, ProductImageInfo 저장
+            productService.updateSaveImg(existingProductInfo, imageInfoList);
+        } catch (Exception e) {
+            throw new RuntimeException(e); // return apiResponse.error();
+        }
+        return apiResponse.success();
+    }
+
+    /**
+     * 사진파일 리스트 가져오기
+     * */
+    @GetMapping("/getImgsrcByProdNo")
+    public ApiResponse getImgsrcByProdNo(@RequestParam HashMap<String, Object> params) {
+        Long prodNo =  Long.parseLong((String) params.get("prodNo"));
+        List<String> mngFileNm = productService.getImgsrcByProdNo(prodNo);
+
+        return apiResponse.addResult("LIST", mngFileNm);
+    }
+
+    @PostMapping("/removeServerImage")
+    public ApiResponse removeServerImage(@RequestBody Map<String, String> params) {
+
+        try {
+            String filePath = params.get("filePath");
+            String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+
+            productService.removeFileAndUpdateDB(fileName);
+
+
+            // 성공 응답 반환
+            return apiResponse.success();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 실패 응답 반환
+            return apiResponse.error();
+        }
+    }
 
 
     /**

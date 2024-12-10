@@ -1,6 +1,8 @@
 package bangdori.api.product.service;
 
+import bangdori.api.product.dto.CodeDTO;
 import bangdori.api.product.dto.ProductDTO;
+import bangdori.api.product.dto.ProductImageInfoDTO;
 import bangdori.api.product.entity.ProductImageInfo;
 import bangdori.api.product.entity.ProductInfo;
 import bangdori.api.product.entity.ProductRemarksInfo;
@@ -11,7 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,7 +56,7 @@ public List<ProductDTO> getProductList() {
                 .map(remarksInfo -> ProductRemarksInfo.builder()
                         .productInfo(savedProductInfo)   // 저장된 productInfo 객체를 설정
                         .remarkCd(remarksInfo.getRemarkCd())  // remarkCd 설정
-                        .useYn("Y")                 // 기본값 Y 설정
+                        .useYn("1")                 // 기본값 Y 설정
                         .regDtm(LocalDateTime.now()) // 현재 시간으로 등록일시 설정
                         .build())
                 .collect(Collectors.toList());
@@ -62,7 +69,7 @@ public List<ProductDTO> getProductList() {
                         .productInfo(savedProductInfo)
                         .managementFileName(imageInfo.getManagementFileName())
                         .realFileName(imageInfo.getRealFileName())
-                        .useYn("Y")
+                        .useYn("1")
                         .regDtm(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
@@ -80,5 +87,82 @@ public List<ProductDTO> getProductList() {
     public void deleteProduct(Long prodNo) {
         ProductInfo productInfo = productRepository.findById(prodNo).orElse(null);
         productInfo.updateUseYn("0");
+    }
+
+    public List<String> getImgsrcByProdNo (Long prodNo){
+        List<String> mngFileNms =  productImageInfoRepository.findByProductInfoProdNoAndUseYn(prodNo,"1")
+                .stream()
+                .map(ProductImageInfo::getManagementFileName)
+                .collect(Collectors.toList());
+
+        //여기 나중에 운영 경로로 바꾸기
+        String userHome = System.getProperty("user.home");
+        String uploadDir = userHome + "/Desktop/bangdori/backend/src/main/resources/static";
+        List<String> mngFileNm = new ArrayList<>();
+        for(String fileNm :mngFileNms){
+            fileNm = "http://localhost:8080/"+ fileNm;
+            mngFileNm.add(fileNm);
+        }
+
+     return mngFileNm;
+    }
+
+
+    @Transactional
+    public void removeFileAndUpdateDB(String fileName) throws Exception {
+        // 1. 파일 삭제 처리  >> 나중에 합시다 ?
+       /* Path file = Paths.get("static/" + fileName); // 파일 경로
+        System.out.println("this error********* file:     "+ file);
+
+        boolean fileDeleted = Files.deleteIfExists(file); // 파일이 존재하면 삭제
+        System.out.println("this error********* fileDeleted  :     "+ fileDeleted);
+*/
+        // 2. DB에서 해당 파일 정보의 useYn을 0으로 업데이트
+
+        // 파일명으로 해당 파일 정보를 찾고, useYn을 "N"으로 업데이트
+        System.out.println("fileName ?? " + fileName);
+        int updateCount = productImageInfoRepository.updateUseYnByRealFileName(fileName, "0");
+
+        System.out.println("fileName ?? " + fileName);
+        // DB 업데이트가 되지 않았다면 예외 처리
+        if (updateCount == 0) {
+            throw new Exception("파일의 useYn 업데이트 실패");
+        }
+    }
+
+    public ProductInfo findByProdNo(Long prodNo) {
+        return productRepository.findByProdNo(prodNo).orElse(null);
+    }
+
+    @Transactional
+    public void updateRemarks(Long prodNo, List<ProductRemarksInfo> updatedRemarksInfoList) {
+        // 상품 번호로 관련 remarks 조회
+        List<ProductRemarksInfo> existingRemarks = productRemarksInfoRepository.findByProductInfoProdNo(prodNo);
+
+        System.out.println("나오는지 확인 ~~~!!! 1  "+existingRemarks.get(0).getProductInfo().getProdNo());
+        // 기존 remarks 데이터 삭제
+        if (!existingRemarks.isEmpty()) {
+            productRemarksInfoRepository.updateUseYnByProdNo(prodNo , "0");
+        }
+
+        // 새로운 remarks 데이터 저장
+        productRemarksInfoRepository.saveAll(updatedRemarksInfoList);
+    }
+
+
+    @Transactional
+    public void updateSaveImg(ProductInfo existingProductInfo, List<ProductImageInfo> imageInfoList) {
+
+        List<ProductImageInfo> updatedImageInfoList = imageInfoList.stream()
+                .map(imageInfo -> ProductImageInfo.builder()
+                        .productInfo(existingProductInfo)
+                        .managementFileName(imageInfo.getManagementFileName())
+                        .realFileName(imageInfo.getRealFileName())
+                        .useYn("1")
+                        .regDtm(LocalDateTime.now())
+                        .build())
+                .collect(Collectors.toList());
+
+        productImageInfoRepository.saveAll(updatedImageInfoList);
     }
 }

@@ -24,15 +24,5 @@ public class CodeDTO {
         );
     }
 
-    @Getter
-    @Setter
-    public static class ProductImageInfoDTO {
 
-        private Long seqNo; // 일련번호
-        private Long prodNo; // 매물 고유번호 (외래키)
-        private String managementFileName; // 관리 파일명
-        private String realFileName; // 실제 파일명
-        private String useYn; // 사용 여부
-        private LocalDateTime regDtm; // 등록 일시
-    }
 }
