@@ -10,7 +10,7 @@ spring:
   jpa:
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: none   # option type: update - 변경분만 반영(운영DB에서는 사용하면 안됨)
+      ddl-auto: update   # option type: update - 변경분만 반영(운영DB에서는 사용하면 안됨)
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect  # 쿼리의 기준이 되는 데이터베이스 엔진을 설정합니다.
@@ -30,4 +30,8 @@ spring:
       idle-timeout: 600000
       max-lifetime: 18000000
       leak-detection-threshold:  1000000
+
+jwt:
+  secret: "2ff22162e8c39cbdf621e17489c88c5fcfffc3e1f672c8ddbdc6d9055a2a8221"
+  token-validity-in-seconds: 3600
 

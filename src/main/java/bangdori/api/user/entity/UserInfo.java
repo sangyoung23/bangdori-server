@@ -7,6 +7,10 @@ import lombok.*;
 
 //import javax.persistence.*;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -17,20 +21,17 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfo {
-    @Id  // Primary Key 지정
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // AUTO_INCREMENT 설정 (id값이 null일 경우 자동 생성)
-    @Column(name = "USER_NO")  // 컬럼 지정
+public class UserInfo implements UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "USER_NO")
     private Long userNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CORP_NO", referencedColumnName = "CORP_NO")// 외래키 corp_no
+    @JoinColumn(name = "CORP_NO", nullable = false)
     @JsonBackReference
     private CorpInfo corpInfo;
-
-//    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY)
-//    @JsonBackReference  // 순환 참조 방지
-//    private List<ProductInfo> productInfos;
 
     @NotNull
     @Column(name = "ROLE_CD")
@@ -65,4 +66,53 @@ public class UserInfo {
     @Column(name = "CHG_DTM")
     @Temporal(TemporalType.TIMESTAMP)
     private Date chgDtm;
+
+    // username, password, authorities를 받는 생성자 추가
+    public UserInfo(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.id = username;
+        this.pwd = password;
+        // authorities에서 첫 번째 역할만 가져옴
+        this.roleCd = authorities.stream()
+                .map(GrantedAuthority::getAuthority)  // 권한 이름을 가져옵니다.
+                .filter(role -> role.equals("ADMIN") || role.equals("OWNER") || role.equals("MEMBER")) // 유효한 역할만 필터링
+                .findFirst()  // 첫 번째 유효한 권한을 선택
+                .orElse("MEMBER");  // 없으면 "MEMBER" 역할을 기본값으로 설정
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // roleCd를 기반으로 권한 설정 (ROLE_ 접두사 추가)
+        return List.of(() -> "ROLE_" + this.roleCd);
+    }
+
+    @Override
+    public String getUsername() {
+        return this.id;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.pwd;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return "ACTIVE".equals(this.statusCd);
+    }
 }
+
