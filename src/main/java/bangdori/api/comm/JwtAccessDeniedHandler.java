@@ -15,7 +15,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
 
-        System.out.println("2222");
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
     }
 }

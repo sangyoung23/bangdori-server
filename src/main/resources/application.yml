@@ -29,7 +29,6 @@ server:
 spring:
   profiles:
     active : local
-  servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
@@ -37,4 +36,10 @@ spring:
   web:
     resources:
       static-locations: classpath:/static/
+
+
+jwt:
+  header: Authorization
+  secret: ZGFlZmE5NWYwYTE5M2I1YmRlYmJiOTJkYjgwYzFkNjg3MzUyOGVmMzIyZmRiYTQ4ZjFiZDE2YmM2ZGRjMzczYzg1NDZiYWZhZTE0ZWM3NDllMzYwYjZkNGE1ZDUzZDRiNWJhMjIzY2FlOTJmYzZhZGMzMDE2NjlkNjk0YWZlMTY=
+  token-validity-in-seconds: 3600
 

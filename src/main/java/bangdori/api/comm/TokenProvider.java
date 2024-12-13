@@ -4,7 +4,6 @@ import bangdori.api.user.entity.UserInfo;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,12 +16,13 @@ import org.slf4j.LoggerFactory;
 
 import java.security.Key;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
-public class TokenProvider {
+public class TokenProvider implements InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
     private static final String AUTHORITIES_KEY = "auth";
@@ -33,26 +33,32 @@ public class TokenProvider {
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
+
         if (secret == null || secret.isEmpty()) {
             throw new IllegalArgumentException("JWT Secret Key is not configured properly.");
         }
         this.secret = secret;
+
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
     }
 
-    @PostConstruct
+    @Override
     public void afterPropertiesSet() {
-        // secret이 Base64로 인코딩된 값이라면 이를 디코딩해서 Key를 생성
-        if (secret.length() < 64) { // 512비트 미만인 경우
-            // 비밀 키를 안전하게 생성
-            this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-        } else {
+        try {
+            // Base64 디코딩된 secret 값으로 HMAC 키를 생성
             byte[] keyBytes = Decoders.BASE64.decode(secret);
             this.key = Keys.hmacShaKeyFor(keyBytes);
+
+
+            // 디코딩된 키를 Base64로 다시 출력하여 확인 가능 (디버깅용)
+            logger.info("Signing key initialized: {}", Base64.getEncoder().encodeToString(keyBytes));
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid JWT secret key: The secret must be a valid Base64-encoded string.", e);
+            throw new IllegalStateException("JWT secret key initialization failed.", e);
         }
     }
 
-    public String createToken(Authentication authentication) {
+    public String createToken(Authentication authentication, Long userNo) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -62,6 +68,7 @@ public class TokenProvider {
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
+                .claim("userNo", userNo)
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
@@ -88,10 +95,11 @@ public class TokenProvider {
 
     public boolean validateToken(String token) {
         try {
+
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            logger.info("잘못된 JWT 서명입니다.");
+            logger.info("잘못된 JWT 서명입니다." +e);
         } catch (ExpiredJwtException e) {
             logger.info("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {

@@ -31,7 +31,3 @@ spring:
       max-lifetime: 18000000
       leak-detection-threshold:  1000000
 
-jwt:
-  secret: "2ff22162e8c39cbdf621e17489c88c5fcfffc3e1f672c8ddbdc6d9055a2a8221"
-  token-validity-in-seconds: 3600
-

@@ -32,9 +32,6 @@ public class UserService {
         UserInfo userInfo = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        System.out.println(passwordEncoder.matches(password, userInfo.getPwd()));
-        System.out.println(!passwordEncoder.matches(password, userInfo.getPwd()));
-
         // 비밀번호 검증
         if (!passwordEncoder.matches(password, userInfo.getPwd())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
