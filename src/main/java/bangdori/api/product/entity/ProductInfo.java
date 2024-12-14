@@ -206,6 +206,10 @@ public class ProductInfo {
         this.newDtm = LocalDateTime.now();
     }
 
+    public void updateChgUserId(Long userNo) {
+        this.chgUserId = userNo;
+    }
+
     public  void updateUseYn(String useYn) {
         this.useYn = useYn;
     }

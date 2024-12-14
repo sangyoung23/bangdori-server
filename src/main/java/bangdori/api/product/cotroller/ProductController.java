@@ -1,4 +1,4 @@
-package bangdori.api.product.Cotroller;
+package bangdori.api.product.cotroller;
 
 import bangdori.api.comm.ApiResponse;
 import bangdori.api.comm.ErrorCode;
@@ -12,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -188,14 +185,19 @@ public class ProductController {
      * 매물 최신일자 Update
      */
     @PostMapping("/updateNewDtm")
-    public ApiResponse updateNewDtm(@RequestBody Map<String, Object> prams) {
+    public ApiResponse updateNewDtm(@RequestBody Map<String, Object> params) {
         try {
-            productService.updateNewDtm( Long.parseLong(prams.get("prodNo").toString()));
+            Long prodNo = Long.parseLong(params.get("prodNo").toString());
+            Long userNo = Long.parseLong(params.get("userNo").toString());
+
+            // 매물의 newDtm 및 chg_user_id 업데이트
+            productService.updateNewDtm(prodNo, userNo);
         } catch (Exception e) {
             return apiResponse.error();
         }
         return apiResponse.success();
     }
+
 
     /**
      * 매물 Delete

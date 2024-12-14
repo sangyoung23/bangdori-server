@@ -79,6 +79,18 @@ public class UserInfo implements UserDetails {
                 .orElse("MEMBER");  // 없으면 "MEMBER" 역할을 기본값으로 설정
     }
 
+    public void updateUserName(String name) {
+        this.name = name;
+    }
+
+    public void updateUserPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo;
+    }
+
+    public void updateUserPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // roleCd를 기반으로 권한 설정 (ROLE_ 접두사 추가)
@@ -86,8 +98,8 @@ public class UserInfo implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return this.id;
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
     @Override
@@ -96,8 +108,8 @@ public class UserInfo implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
+    public String getUsername() {
+        return this.id;
     }
 
     @Override

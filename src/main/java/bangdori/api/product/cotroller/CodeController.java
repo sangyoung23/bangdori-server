@@ -1,4 +1,4 @@
-package bangdori.api.product.Cotroller;
+package bangdori.api.product.cotroller;
 
 
 import bangdori.api.comm.ApiResponse;

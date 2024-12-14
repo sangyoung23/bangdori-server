@@ -9,6 +9,8 @@ import bangdori.api.product.entity.ProductRemarksInfo;
 import bangdori.api.product.repository.ProductImageInfoRepository;
 import bangdori.api.product.repository.ProductRemarksInfoRepository;
 import bangdori.api.product.repository.ProductRepository;
+import bangdori.api.user.entity.UserInfo;
+import bangdori.api.user.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductRemarksInfoRepository productRemarksInfoRepository;
     private final ProductImageInfoRepository productImageInfoRepository;
+    private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
 
 public List<ProductDTO> getProductList() {
@@ -78,9 +81,20 @@ public List<ProductDTO> getProductList() {
 
 
     @Transactional
-    public void updateNewDtm(Long prodNo) {
-        ProductInfo productInfo = productRepository.findById(prodNo).orElse(null);
-        productInfo.updateNewDtm();
+    public void updateNewDtm(Long prodNo, Long userNo) {
+        ProductInfo product = productRepository.findById(prodNo)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        UserInfo user = userRepository.findById(userNo)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        product.updateNewDtm();
+        product.updateChgUserId(user.getUserNo());
+
+
+
+        // 저장
+        productRepository.save(product);
     }
 
     @Transactional
@@ -97,7 +111,9 @@ public List<ProductDTO> getProductList() {
 
         //여기 나중에 운영 경로로 바꾸기
         String userHome = System.getProperty("user.home");
-        String uploadDir = userHome + "/Desktop/bangdori/backend/src/main/resources/static";
+
+        System.out.println("userHome ? " + userHome);
+        String uploadDir = userHome + "/Desktop/3tierDocker/backend/src/main/resources/static";
         List<String> mngFileNm = new ArrayList<>();
         for(String fileNm :mngFileNms){
             fileNm = "http://localhost:8080/"+ fileNm;

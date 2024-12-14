@@ -3,6 +3,7 @@ package bangdori.api.user.controller;
 import bangdori.api.comm.ApiResponse;
 import bangdori.api.comm.TokenProvider;
 import bangdori.api.user.dto.UserInfoDto;
+import bangdori.api.user.dto.UserUpdateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import bangdori.api.user.service.UserService;
@@ -40,7 +41,20 @@ public class UserController {
         ));
     }
 
-        @GetMapping("/list")
+    // 회원 정보 수정
+    @PostMapping("/update/userInfo")
+    public ApiResponse updateUserForm(@RequestBody UserUpdateDto userUpdateDto) {
+        try {
+            userService.updateUserForm(userUpdateDto);
+            return new ApiResponse().success();
+        } catch (Exception e) {
+            return new ApiResponse().error();
+        }
+    }
+
+
+
+    @GetMapping("/list")
         public ApiResponse getUsers() {
             Map<String, Object> members = userService.getUsers();
             return new ApiResponse().addResult(members);

@@ -19,7 +19,7 @@ public class FileStorageService {
 
     String userHome = System.getProperty("user.home");
 
-    private final String uploadDir = userHome + "/Desktop/bangdori/backend/src/main/resources/static";
+    private final String uploadDir = userHome + "/Desktop/3tierDocker/backend/src/main/resources/static";
 
     public String saveFile(MultipartFile file) {
 

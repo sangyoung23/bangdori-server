@@ -1,5 +1,7 @@
 package bangdori.api.comm;
 
+import bangdori.api.comm.exception.InvalidException;
+import bangdori.api.comm.exception.TokenExpiredException;
 import bangdori.api.user.entity.UserInfo;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -39,7 +41,7 @@ public class TokenProvider implements InitializingBean {
         }
         this.secret = secret;
 
-        this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
+        this.tokenValidityInMilliseconds = tokenValidityInSeconds * 10000;
     }
 
     @Override
@@ -101,7 +103,7 @@ public class TokenProvider implements InitializingBean {
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             logger.info("잘못된 JWT 서명입니다." +e);
         } catch (ExpiredJwtException e) {
-            logger.info("만료된 JWT 토큰입니다.");
+            throw new TokenExpiredException("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
             logger.info("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {

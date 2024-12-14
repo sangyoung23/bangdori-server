@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfoDto {
+public class    UserInfoDto {
 
     private Long userNo;
     private Long corpNo;  // 외래키 'CORP_NO'만 필요

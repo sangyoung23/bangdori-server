@@ -2,6 +2,7 @@ package bangdori.api.user.service;
 
 import bangdori.api.comm.Constants;
 import bangdori.api.user.dto.UserInfoDto;
+import bangdori.api.user.dto.UserUpdateDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import bangdori.api.user.entity.UserInfo;
 import bangdori.api.user.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +43,31 @@ public class UserService {
         return UserInfoDto.fromEntity(userInfo);
 
     }
+
+    /**
+     * 회원정보 수정
+     */
+    @Transactional
+    public void updateUserForm(UserUpdateDto userUpdateDto) {
+        // UserInfo 엔티티를 DB에서 조회
+        UserInfo userInfo = userRepository.findById(userUpdateDto.getUserNo())
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자 번호입니다."));
+
+        // 엔티티 업데이트
+        if (userUpdateDto.getName() != null) {
+            userInfo.updateUserName(userUpdateDto.getName());
+        }
+        if (userUpdateDto.getPhoneNo() != null) {
+            userInfo.updateUserPhoneNo(userUpdateDto.getPhoneNo());
+        }
+        if (userUpdateDto.getPwd() != null) {
+            userInfo.updateUserPwd(passwordEncoder.encode(userUpdateDto.getPwd())); // 비밀번호 암호화
+        }
+
+        // 변경 내용 저장
+        userRepository.save(userInfo);
+    }
+
 
     /**
      * userInfo List 조회
