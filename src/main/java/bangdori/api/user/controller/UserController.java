@@ -34,13 +34,14 @@ public class UserController {
 
         return new ApiResponse().addResult(Map.of(
                 "token", token,
+                "userNo", userInfoDto.getUserNo(),
+                "userId", userInfoDto.getId(),
                 "username", userInfoDto.getName()
         ));
     }
 
         @GetMapping("/list")
         public ApiResponse getUsers() {
-            System.out.println("악 이제 됨!!!!!!!!");
             Map<String, Object> members = userService.getUsers();
             return new ApiResponse().addResult(members);
         }
@@ -48,7 +49,6 @@ public class UserController {
 
         @PostMapping("/id")
         public ApiResponse getUserById(@RequestBody HashMap<String, Object> params) {
-            System.out.println(" 되는지?    :::   "+params.get("id"));
             Map<String, Object> result = new HashMap<>();
             UserInfoDto userDTO = userService.getUserById((String) params.get("id"));
             result.put("userDto",userDTO);
