@@ -9,16 +9,15 @@ import bangdori.api.product.entity.ProductRemarksInfo;
 import bangdori.api.product.repository.ProductImageInfoRepository;
 import bangdori.api.product.repository.ProductRemarksInfoRepository;
 import bangdori.api.product.repository.ProductRepository;
+import bangdori.api.user.dto.UserPulicInfoDTO;
 import bangdori.api.user.entity.UserInfo;
 import bangdori.api.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,20 +102,21 @@ public List<ProductDTO> getProductList() {
         productInfo.updateUseYn("0");
     }
 
+
+    @Value("${env.serverUrl}")
+    String serverUrl;
+
+
     public List<String> getImgsrcByProdNo (Long prodNo){
         List<String> mngFileNms =  productImageInfoRepository.findByProductInfoProdNoAndUseYn(prodNo,"1")
                 .stream()
                 .map(ProductImageInfo::getManagementFileName)
                 .collect(Collectors.toList());
 
-        //여기 나중에 운영 경로로 바꾸기
-        String userHome = System.getProperty("user.home");
 
-        System.out.println("userHome ? " + userHome);
-        String uploadDir = userHome + "/Desktop/3tierDocker/backend/src/main/resources/static";
         List<String> mngFileNm = new ArrayList<>();
         for(String fileNm :mngFileNms){
-            fileNm = "http://localhost:8080/"+ fileNm;
+            fileNm = serverUrl + "ContentItem?image="+ fileNm;
             mngFileNm.add(fileNm);
         }
 
@@ -180,5 +180,9 @@ public List<ProductDTO> getProductList() {
                 .collect(Collectors.toList());
 
         productImageInfoRepository.saveAll(updatedImageInfoList);
+    }
+
+    public List<UserPulicInfoDTO> getUserList(Long userNo) {
+        return userRepository.findByCorpInfoOfUserNo(userNo);
     }
 }

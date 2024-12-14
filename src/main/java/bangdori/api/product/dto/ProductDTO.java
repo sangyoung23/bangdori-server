@@ -42,6 +42,7 @@ public class ProductDTO {
     private String prodAddr;
     private String prodRoadAddr;
     private String prodDtlAddr;
+    private Long prodMngUser;
     private LocalDateTime newDtm;
     private Long regUserId;
     private Long chgUserId;
@@ -87,6 +88,7 @@ public class ProductDTO {
                 productInfo.getProdAddr(),
                 productInfo.getProdRoadAddr(),
                 productInfo.getProdDtlAddr(),
+                productInfo.getProdMngUser(),
                 productInfo.getNewDtm(),
                 productInfo.getRegUserId(),
                 productInfo.getChgUserId(),

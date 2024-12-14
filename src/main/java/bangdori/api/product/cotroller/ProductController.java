@@ -8,6 +8,7 @@ import bangdori.api.product.entity.ProductInfo;
 import bangdori.api.product.entity.ProductRemarksInfo;
 import bangdori.api.product.service.FileStorageService;
 import bangdori.api.product.service.ProductService;
+import bangdori.api.user.dto.UserPulicInfoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,11 +32,14 @@ public class ProductController {
         return apiResponse.addResult("LIST", productList);
     }
 
+    @GetMapping("/userList")
+    public ApiResponse getUserList(@RequestParam HashMap<String, Object> params) {
 
+        Long userNo = Long.parseLong(params.get("userNo").toString());
+        List<UserPulicInfoDTO> userInfoList =  productService.getUserList(userNo);
+        return apiResponse.addResult("LIST", userInfoList);
+    }
 
-    /**
-     * 매물/매매/임대 수정
-     * */
 
     /**
      * 매물/매매/임대 등록
@@ -95,15 +99,10 @@ public class ProductController {
                                   @RequestPart(value = "imges", required = false) List<MultipartFile> imges) {
 
         try {
-
-            System.out.println("일단 제대로 호출되는지 확인 !");
             // 기존 ProductInfo 조회
 
             Long prodNo = Long.parseLong(strProdNo);
             ProductInfo existingProductInfo = productService.findByProdNo(prodNo);
-
-            System.out.println("일단 제대로 호출되는지 확인 getProdNo !" + existingProductInfo.getProdNo());
-            System.out.println("일단 제대로 호출되는지 확인 getTitle !" + existingProductInfo.getTitle());
             if (existingProductInfo == null) {
                 return apiResponse.setMessage(ErrorCode.PRD0001);
             }
@@ -115,7 +114,7 @@ public class ProductController {
                     .orElse(Collections.emptyList())
                     .stream()
                     .map(remarkCd -> ProductRemarksInfo.builder()
-                            .productInfo(existingProductInfo) //이게 맞나....
+                            .productInfo(existingProductInfo)
                             .remarkCd(remarkCd)
                             .useYn("1")
                             .regDtm(LocalDateTime.now())

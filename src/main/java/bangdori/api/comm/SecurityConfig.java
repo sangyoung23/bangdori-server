@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
+                .requestMatchers("/ContentItem").permitAll()
                 .requestMatchers("/api/user/login").permitAll() // 로그인 api 인증 없이 접근 가능
                 .requestMatchers("/api/user/signup").permitAll() // 회원가입 api 인증 없이 접근 가능
                 .requestMatchers("/favicon.ico").permitAll()

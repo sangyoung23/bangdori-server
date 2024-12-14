@@ -1,7 +1,6 @@
 package bangdori.api.product.entity;
 
 import bangdori.api.product.dto.ProductDTO;
-import bangdori.api.user.entity.UserInfo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -96,6 +95,9 @@ public class ProductInfo {
     @Column(name = "PROD_DTL_ADDR", length = 100)
     private String prodDtlAddr;
 
+    @Column(name = "PROD_MNG_USER", nullable = false)
+    private Long prodMngUser;
+
     @Column(name = "NEW_DTM", nullable = false)
     private LocalDateTime newDtm;
 
@@ -150,6 +152,7 @@ public class ProductInfo {
                 .prodAddr(dto.getProdAddr())
                 .prodRoadAddr(dto.getProdRoadAddr())
                 .prodDtlAddr(dto.getProdDtlAddr())
+                .prodMngUser(dto.getProdMngUser())
                 .newDtm(LocalDateTime.now())
                 .useYn("1") // 기본값 설정
                 .regDtm(LocalDateTime.now())
@@ -165,7 +168,7 @@ public class ProductInfo {
                        String salePrice, String depositTotal, String rentTotal, String premiumFee,
                        String premiumYn, String directionCd, String rcmCd, String roomCd,
                        String bathCd, String moveInCd, String prodAddr, String prodRoadAddr,
-                       String prodDtlAddr, LocalDateTime newDtm, String useYn, String rmk,
+                       String prodDtlAddr,Long prodMngUser , LocalDateTime newDtm, String useYn, String rmk,
                        Long regUserId, LocalDateTime regDtm, Long chgUserId, LocalDateTime chgDtm) {
         this.prodNo = prodNo;
         this.tradeType = tradeType;
@@ -193,6 +196,7 @@ public class ProductInfo {
         this.prodAddr = prodAddr;
         this.prodRoadAddr = prodRoadAddr;
         this.prodDtlAddr = prodDtlAddr;
+        this.prodMngUser = prodMngUser;
         this.newDtm = newDtm;
         this.useYn = useYn;
         this.rmk = rmk;
@@ -240,7 +244,7 @@ public class ProductInfo {
         this.prodAddr = dto.getProdAddr();
         this.prodRoadAddr = dto.getProdRoadAddr();
         this.prodDtlAddr = dto.getProdDtlAddr();
-        this.chgUserId = dto.getChgUserId(); // 변경한 사용자 ID 업데이트
+        this.prodMngUser = dto.getProdMngUser();
         this.newDtm = LocalDateTime.now(); // 변경 시간 업데이트
         this.chgDtm = LocalDateTime.now(); // 변경 시간 업데이트
     }
