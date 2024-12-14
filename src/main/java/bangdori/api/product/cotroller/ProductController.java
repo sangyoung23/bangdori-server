@@ -164,7 +164,7 @@ public class ProductController {
 
         try {
             String filePath = params.get("filePath");
-            String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+            String fileName = filePath.substring(filePath.lastIndexOf("=") + 1);
 
             productService.removeFileAndUpdateDB(fileName);
 
