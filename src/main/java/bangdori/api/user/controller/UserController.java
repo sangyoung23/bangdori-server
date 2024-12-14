@@ -31,7 +31,7 @@ public class UserController {
 
         // JWT 토근 생성
         String token = tokenProvider.createToken(userInfoDto.toAuthentication(),userInfoDto.getUserNo());
-
+ 
         return new ApiResponse().addResult(Map.of(
                 "token", token,
                 "userNo", userInfoDto.getUserNo(),
