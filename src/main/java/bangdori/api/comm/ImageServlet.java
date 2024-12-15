@@ -19,8 +19,6 @@ public class ImageServlet extends HttpServlet {
     @Value("${path.image}") String path;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setHeader("Cache-Control", "public, max-age=3600");
-        response.setHeader("Pragma", "cache");
 
         String imagePath = request.getParameter("image"); // image 파라미터 값 가져오기
         String filePath = path +"/"+ imagePath; // 실제 파일 경로로 조정
