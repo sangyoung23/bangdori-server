@@ -54,13 +54,13 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자 번호입니다."));
 
         // 엔티티 업데이트
-        if (userUpdateDto.getName() != null) {
+        if (userUpdateDto.getName() != null && !userUpdateDto.getName().isEmpty()) {
             userInfo.updateUserName(userUpdateDto.getName());
         }
-        if (userUpdateDto.getPhoneNo() != null) {
+        if (userUpdateDto.getPhoneNo() != null && !userUpdateDto.getPhoneNo().isEmpty()) {
             userInfo.updateUserPhoneNo(userUpdateDto.getPhoneNo());
         }
-        if (userUpdateDto.getPwd() != null) {
+        if (userUpdateDto.getPwd() != null && !userUpdateDto.getPwd().isEmpty()) {
             userInfo.updateUserPwd(passwordEncoder.encode(userUpdateDto.getPwd())); // 비밀번호 암호화
         }
 

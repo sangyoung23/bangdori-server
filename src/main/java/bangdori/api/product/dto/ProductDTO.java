@@ -73,7 +73,7 @@ public class ProductDTO {
                 deposit,
                 monthlyRent,
                 "보증" + deposit + "만" + " / " +  "월" + monthlyRent + "만",
-                "매매" + salePrice + "만" + " / " + "보증" + depositTotal + "만" + " / " + "매매" + rentTotal + "만",
+                "매매" + salePrice + "만" + " / " + "보증" + depositTotal + "만" + " / " + "임대" + rentTotal + "만",
                 "보증" + deposit + "만" + " / " +  "월" + monthlyRent + "만" + " / " + "권리" + premiumFee + "만",
                 salePrice,
                 depositTotal,

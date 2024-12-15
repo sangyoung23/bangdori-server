@@ -18,26 +18,11 @@ public class FileStorageService {
 
 
     @Value("${path.image}") String path;
-    String userHome = System.getProperty("user.home");
-
-    private String getFilePath (){
-        String rltPath ="";
-
-        String profile = System.getProperty("spring.profiles.active");
-        if ("prod".equals(profile)) {
-            rltPath = path + "/운영경로정해지면";  // 프로덕션 환경에서 이미지 경로
-        } else {
-
-            rltPath = userHome +  path;  // 로컬 환경에서 이미지 경로
-        }
-        return rltPath;
-    }
 
     public String saveFile(MultipartFile file) {
 
         try {
 
-            String path = getFilePath();
             Path directoryPath = Paths.get(path);
             if (!Files.exists(directoryPath)) {
                 Files.createDirectories(directoryPath); // 경로가 없으면 생성

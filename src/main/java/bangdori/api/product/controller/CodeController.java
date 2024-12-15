@@ -1,4 +1,4 @@
-package bangdori.api.product.cotroller;
+package bangdori.api.product.controller;
 
 
 import bangdori.api.comm.ApiResponse;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/comm/code")
+@RequestMapping("/comm/code")
 public class CodeController {
 
     private final CodeService codeService;

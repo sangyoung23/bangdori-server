@@ -23,15 +23,6 @@ public class ImageServlet extends HttpServlet {
         response.setHeader("Pragma", "cache");
 
         String imagePath = request.getParameter("image"); // image 파라미터 값 가져오기
-        String profile = System.getProperty("spring.profiles.active");
-
-        if ("prod".equals(profile)) {
-            path = path + "/운영경로정해지면";  // 프로덕션 환경에서 이미지 경로
-        } else {
-            String userHome = System.getProperty("user.home");
-            path = userHome +path;  // 로컬 환경에서 이미지 경로
-        }
-
         String filePath = path +"/"+ imagePath; // 실제 파일 경로로 조정
         File imageFile = new File(filePath);
         if (imageFile.exists()) {

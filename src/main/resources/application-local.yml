@@ -35,4 +35,4 @@ spring:
 env :
   serverUrl: "http://localhost:8080/"
 path:
-  image: "/Desktop/bangdori/backend/productImg"
+  image: "/Users/yeoni/Desktop/bangdori/backend/productImg"

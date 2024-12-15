@@ -4,7 +4,7 @@
 server:
   port: "8080"
   servlet:
-    context-path: /
+    context-path: /api
     encoding:
       charset: UTF-8
       force: true
@@ -15,16 +15,16 @@ server:
 
   
 ## logging
-#logging:
-#  level:
-#    root: debug
-#    jdbc:
-#      audit: off
-#      connection: off
-#      resultset: debug
-#      resultsettable: debug
-#      sqlonly: debug
-#      sqltiming: debug
+logging:
+  level:
+    root: debug
+    jdbc:
+      audit: off
+      connection: off
+      resultset: debug
+      resultsettable: debug
+      sqlonly: debug
+      sqltiming: debug
       
 spring:
   multipart:

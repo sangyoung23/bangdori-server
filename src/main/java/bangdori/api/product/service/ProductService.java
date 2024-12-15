@@ -116,7 +116,7 @@ public List<ProductDTO> getProductList() {
 
         List<String> mngFileNm = new ArrayList<>();
         for(String fileNm :mngFileNms){
-            fileNm = serverUrl + "ContentItem?image="+ fileNm;
+            fileNm = serverUrl + "api/ContentItem?image="+ fileNm;
             mngFileNm.add(fileNm);
         }
 

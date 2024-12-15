@@ -19,6 +19,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:3000"); // React 서버 주소
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000", "https://bangdori.com","https://www.bangdori.com")
+                .allowedMethods("*")
+                .allowedHeaders("*");
     }
 }

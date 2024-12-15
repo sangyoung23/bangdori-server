@@ -1,4 +1,4 @@
-package bangdori.api.product.cotroller;
+package bangdori.api.product.controller;
 
 import bangdori.api.comm.ApiResponse;
 import bangdori.api.comm.ErrorCode;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/product")
 public class ProductController {
 
     private final ProductService productService;
