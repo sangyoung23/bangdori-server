@@ -154,8 +154,7 @@ public List<ProductDTO> getProductList() {
     public void updateRemarks(Long prodNo, List<ProductRemarksInfo> updatedRemarksInfoList) {
         // 상품 번호로 관련 remarks 조회
         List<ProductRemarksInfo> existingRemarks = productRemarksInfoRepository.findByProductInfoProdNo(prodNo);
-
-        System.out.println("나오는지 확인 ~~~!!! 1  "+existingRemarks.get(0).getProductInfo().getProdNo());
+        
         // 기존 remarks 데이터 삭제
         if (!existingRemarks.isEmpty()) {
             productRemarksInfoRepository.updateUseYnByProdNo(prodNo , "0");
