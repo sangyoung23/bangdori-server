@@ -89,6 +89,12 @@ public class ProductInfo {
     @Column(name = "PROD_ADDR", length = 100)
     private String prodAddr;
 
+    @Column(name = "PROPERTY_X", length = 100)
+    private String propertyX;
+
+    @Column(name = "PROPERTY_Y", length = 100)
+    private String propertyY;
+
     @Column(name = "PROD_ROAD_ADDR", length = 100)
     private String prodRoadAddr;
 
@@ -150,6 +156,8 @@ public class ProductInfo {
                 .bathCd(dto.getBathCd())
                 .moveInCd(dto.getMoveInCd())
                 .prodAddr(dto.getProdAddr())
+                .propertyX(dto.getPropertyX())
+                .propertyY(dto.getPropertyY())
                 .prodRoadAddr(dto.getProdRoadAddr())
                 .prodDtlAddr(dto.getProdDtlAddr())
                 .prodMngUser(dto.getProdMngUser())
@@ -167,7 +175,7 @@ public class ProductInfo {
                        String unitNo, String etc, String deposit, String monthlyRent,
                        String salePrice, String depositTotal, String rentTotal, String premiumFee,
                        String premiumYn, String directionCd, String rcmCd, String roomCd,
-                       String bathCd, String moveInCd, String prodAddr, String prodRoadAddr,
+                       String bathCd, String moveInCd, String prodAddr, String propertyX, String propertyY, String prodRoadAddr,
                        String prodDtlAddr,Long prodMngUser , LocalDateTime newDtm, String useYn, String rmk,
                        Long regUserId, LocalDateTime regDtm, Long chgUserId, LocalDateTime chgDtm) {
         this.prodNo = prodNo;
@@ -194,6 +202,8 @@ public class ProductInfo {
         this.bathCd = bathCd;
         this.moveInCd = moveInCd;
         this.prodAddr = prodAddr;
+        this.propertyX = propertyX;
+        this.propertyY = propertyY;
         this.prodRoadAddr = prodRoadAddr;
         this.prodDtlAddr = prodDtlAddr;
         this.prodMngUser = prodMngUser;
@@ -242,6 +252,8 @@ public class ProductInfo {
         this.bathCd = dto.getBathCd();
         this.moveInCd = dto.getMoveInCd();
         this.prodAddr = dto.getProdAddr();
+        this.propertyX = dto.getPropertyX();
+        this.propertyY = dto.getPropertyY();
         this.prodRoadAddr = dto.getProdRoadAddr();
         this.prodDtlAddr = dto.getProdDtlAddr();
         this.prodMngUser = dto.getProdMngUser();

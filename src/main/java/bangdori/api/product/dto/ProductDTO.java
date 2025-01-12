@@ -42,6 +42,8 @@ public class ProductDTO {
     private String bathCd;
     private String moveInCd;
     private String prodAddr;
+    private String propertyX;
+    private String propertyY;
     private String prodRoadAddr;
     private String prodDtlAddr;
     private Long prodMngUser;
@@ -88,6 +90,8 @@ public class ProductDTO {
                 productInfo.getBathCd(),
                 productInfo.getMoveInCd(),
                 productInfo.getProdAddr(),
+                productInfo.getPropertyX(),
+                productInfo.getPropertyY(),
                 productInfo.getProdRoadAddr(),
                 productInfo.getProdDtlAddr(),
                 productInfo.getProdMngUser(),
