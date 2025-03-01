@@ -99,7 +99,11 @@ public List<ProductDTO> getProductList() {
     @Transactional
     public void deleteProduct(Long prodNo) {
         ProductInfo productInfo = productRepository.findById(prodNo).orElse(null);
-        productInfo.updateUseYn("0");
+        if (productInfo != null) {
+            productInfo.updateUseYn("0");
+        } else {
+            throw new IllegalArgumentException("Product not found with id: " + prodNo);
+        }
     }
 
 
