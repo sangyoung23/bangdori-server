@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
@@ -226,6 +228,7 @@ public class ProductInfo {
 
     public  void updateUseYn(String useYn) {
         this.useYn = useYn;
+        this.chgDtm = LocalDateTime.now();
     }
 
     public void updateFromDto(ProductDTO dto) {
