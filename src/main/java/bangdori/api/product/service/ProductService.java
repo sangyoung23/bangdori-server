@@ -34,8 +34,13 @@ public class ProductService {
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
 
-public List<ProductDTO> getProductList() {
-    List<ProductInfo> products = productRepository.findAllByUseYnOrderByNewDtmDesc("1");
+public List<ProductDTO> getProductList(Long userNo) {
+    UserInfo user = userRepository.findById(userNo)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+    Long corpNo = user.getCorpInfo().getCorpNo();
+
+    List<ProductInfo> products = productRepository.findAllByUseYnAndCorpNoOrderByNewDtmDesc("1", corpNo );
 
     return products.stream().map(product -> {
         // ProductInfo 엔티티를 DTO로 변환하면서, 해당 ProductInfo에 해당하는 모든 remarkCd를 가져오기

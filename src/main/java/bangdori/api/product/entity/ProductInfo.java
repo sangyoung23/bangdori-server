@@ -22,6 +22,9 @@ public class ProductInfo {
     @Column(name = "PROD_NO")
     private Long prodNo;
 
+    @Column(name = "CORP_NO", length = 50, nullable = false)
+    private Long corpNo;
+
     @Column(name = "TRADE_TYPE", length = 50, nullable = false)
     private String tradeType;
 
@@ -135,6 +138,7 @@ public class ProductInfo {
     public static ProductInfo fromDto(ProductDTO dto) {
         return ProductInfo.builder()
                 //.prodNo(dto.getProdNo()) //insert 할때 오류나는데...
+                .corpNo(dto.getCorpNo())
                 .tradeType(dto.getTradeType())
                 .title(dto.getTitle())
                 .type(dto.getType())
@@ -172,7 +176,7 @@ public class ProductInfo {
     }
 
     @Builder
-    public ProductInfo(Long prodNo, String tradeType, String title, String type, String statusCd,
+    public ProductInfo(Long prodNo, Long corpNo,String tradeType, String title, String type, String statusCd,
                        String entrancePwd, String unitPwd, String phoneNo1, String phoneNo2,
                        String unitNo, String etc, String deposit, String monthlyRent,
                        String salePrice, String depositTotal, String rentTotal, String premiumFee,
@@ -181,6 +185,7 @@ public class ProductInfo {
                        String prodDtlAddr,Long prodMngUser , LocalDateTime newDtm, String useYn, String rmk,
                        Long regUserId, LocalDateTime regDtm, Long chgUserId, LocalDateTime chgDtm) {
         this.prodNo = prodNo;
+        this.corpNo = corpNo;
         this.tradeType = tradeType;
         this.title = title;
         this.type = type;
@@ -232,6 +237,7 @@ public class ProductInfo {
     }
 
     public void updateFromDto(ProductDTO dto) {
+        this.corpNo = dto.getCorpNo();
         this.tradeType = dto.getTradeType();
         this.title = dto.getTitle();
         this.type = dto.getType();
