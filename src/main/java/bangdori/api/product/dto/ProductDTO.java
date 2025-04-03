@@ -16,6 +16,7 @@ import java.util.List;
 public class ProductDTO {
 
     private Long prodNo;
+    private Long corpNo;
     private String tradeType;
     private String title;
     private String type;
@@ -64,6 +65,7 @@ public class ProductDTO {
 
         return new ProductDTO(
                 productInfo.getProdNo(),
+                productInfo.getCorpNo(),
                 productInfo.getTradeType(),
                 productInfo.getTitle(),
                 productInfo.getType(),

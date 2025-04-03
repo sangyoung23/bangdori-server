@@ -28,7 +28,8 @@ public class ProductController {
 
     @GetMapping("/products")
     public ApiResponse getProductList(@RequestParam HashMap<String, Object> params) {
-        List<ProductDTO> productList = productService.getProductList();
+        Long userNo = Long.parseLong(params.get("userNo").toString());
+        List<ProductDTO> productList = productService.getProductList(userNo);
         return apiResponse.addResult("LIST", productList);
     }
 
