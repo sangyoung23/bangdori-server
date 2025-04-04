@@ -37,7 +37,8 @@ public class UserController {
                 "token", token,
                 "userNo", userInfoDto.getUserNo(),
                 "userId", userInfoDto.getId(),
-                "username", userInfoDto.getName()
+                "username", userInfoDto.getName(),
+                "corpNo", userInfoDto.getCorpNo()
         ));
     }
 
