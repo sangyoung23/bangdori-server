@@ -34,12 +34,7 @@ public class ProductService {
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
 
-public List<ProductDTO> getProductList(Long userNo) {
-    UserInfo user = userRepository.findById(userNo)
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-    Long corpNo = user.getCorpInfo().getCorpNo();
-
+public List<ProductDTO> getProductList(Long corpNo) {
     List<ProductInfo> products = productRepository.findAllByUseYnAndCorpNoOrderByNewDtmDesc("1", corpNo );
 
     return products.stream().map(product -> {
