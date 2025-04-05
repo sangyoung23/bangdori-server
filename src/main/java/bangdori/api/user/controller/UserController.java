@@ -39,7 +39,8 @@ public class UserController {
                 "userNo", userInfoDto.getUserNo(),
                 "userId", userInfoDto.getId(),
                 "username", userInfoDto.getName(),
-                "corpNo", userInfoDto.getCorpNo()
+                "corpNo", userInfoDto.getCorpNo(),
+                "corpNm", userInfoDto.getCorpNm()
         ));
     }
 
