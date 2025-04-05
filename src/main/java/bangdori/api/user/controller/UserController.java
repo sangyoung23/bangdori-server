@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import bangdori.api.user.service.UserService;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +25,8 @@ public class UserController {
     @PostMapping("/login")
     public ApiResponse Login(@RequestBody Map<String, String> params) {
         String id = params.get("id");
-        String password = params.get("password");
-
+        byte[] decodedBytes = Base64.getDecoder().decode(params.get("password"));
+        String password = new String(decodedBytes);;
         // 사용자 인중
         UserInfoDto userInfoDto = userService.authenticate(id, password);
 
