@@ -23,6 +23,7 @@ public class    UserInfoDto {
 
     private Long userNo;
     private Long corpNo;  // 외래키 'CORP_NO'만 필요
+    private String corpNm;
     private String roleCd;
     private String statusCd;
     private String id;
@@ -51,6 +52,7 @@ public class    UserInfoDto {
         UserInfoDto dto = new UserInfoDto();
         dto.setUserNo(userInfo.getUserNo());
         dto.setCorpNo(userInfo.getCorpInfo().getCorpNo());
+        dto.setCorpNm(userInfo.getCorpInfo().getCorpNm());
         dto.setRoleCd(userInfo.getRoleCd());
         dto.setStatusCd(userInfo.getStatusCd());
         dto.setId(userInfo.getId());
