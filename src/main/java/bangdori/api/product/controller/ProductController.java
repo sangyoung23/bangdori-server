@@ -1,6 +1,7 @@
 package bangdori.api.product.controller;
 
 import bangdori.api.comm.ApiResponse;
+import bangdori.api.comm.Constants;
 import bangdori.api.comm.ErrorCode;
 import bangdori.api.product.dto.ProductDTO;
 import bangdori.api.product.entity.ProductImageInfo;
@@ -30,7 +31,7 @@ public class ProductController {
     public ApiResponse getProductList(@RequestParam HashMap<String, Object> params) {
         Long corpNo = Long.parseLong(params.get("corpNo").toString());
         List<ProductDTO> productList = productService.getProductList(corpNo);
-        return apiResponse.addResult("LIST", productList);
+        return apiResponse.addResult(Constants.KEY_LIST, productList);
     }
 
     @GetMapping("/userList")
@@ -38,7 +39,7 @@ public class ProductController {
 
         Long userNo = Long.parseLong(params.get("userNo").toString());
         List<UserPulicInfoDTO> userInfoList =  productService.getUserList(userNo);
-        return apiResponse.addResult("LIST", userInfoList);
+        return apiResponse.addResult(Constants.KEY_LIST, userInfoList);
     }
 
 
@@ -157,7 +158,7 @@ public class ProductController {
         Long prodNo =  Long.parseLong((String) params.get("prodNo"));
         List<String> mngFileNm = productService.getImgsrcByProdNo(prodNo);
 
-        return apiResponse.addResult("LIST", mngFileNm);
+        return apiResponse.addResult(Constants.KEY_LIST, mngFileNm);
     }
 
     @PostMapping("/removeServerImage")
