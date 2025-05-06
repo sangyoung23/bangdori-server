@@ -1,0 +1,39 @@
+# 공통 설정
+server:
+  port: "8080"
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      force: true
+  error:
+    include-stacktrace: always
+    include-trace-on-error: true
+
+# 로깅 설정
+#logging:
+#  level:
+#    root: debug
+#    jdbc:
+#      audit: off
+#      connection: off
+#      resultset: debug
+#      resultsettable: debug
+#      sqlonly: debug
+#      sqltiming: debug
+
+spring:
+  multipart:
+    enabled: true
+    max-file-size: 10MB
+    max-request-size: 10MB
+  web:
+    resources:
+      static-locations: classpath:/static/
+  config:
+    import: optional:file:.env[.properties]
+
+jwt:
+  header: Authorization
+  secret: ${JWT_SECRET_KEY}
+  token-validity-in-seconds: 36000
