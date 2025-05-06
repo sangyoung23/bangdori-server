@@ -27,34 +27,30 @@ public class ProductController {
     private final ApiResponse apiResponse;
     private final FileStorageService fileStorageService;
 
-    @GetMapping("/products")
-    public ApiResponse getProductList(@RequestParam HashMap<String, Object> params) {
-        Long corpNo = Long.parseLong(params.get("corpNo").toString());
+
+    // 매물 조회
+    @GetMapping
+    public ApiResponse getProductList(@RequestParam Long corpNo) {
         List<ProductDTO> productList = productService.getProductList(corpNo);
         return apiResponse.addResult(Constants.KEY_LIST, productList);
     }
 
-    @GetMapping("/userList")
-    public ApiResponse getUserList(@RequestParam HashMap<String, Object> params) {
 
-        Long userNo = Long.parseLong(params.get("userNo").toString());
-        List<UserPulicInfoDTO> userInfoList =  productService.getUserList(userNo);
+    // 관리자 정보 조회
+    @GetMapping("/users")
+    public ApiResponse getUserList(@RequestParam Long userNo) {
+        List<UserPulicInfoDTO> userInfoList = productService.getUserList(userNo);
         return apiResponse.addResult(Constants.KEY_LIST, userInfoList);
     }
 
-
-    /**
-     * 매물/매매/임대 등록
-     * */
-    @PostMapping("/addProdReg")
-    public ApiResponse addProdReg(@RequestPart("productDto") ProductDTO productDto,
-                                  @RequestPart(value = "remarkCds", required = false) List<String> remarkCds,
-                                  @RequestPart(value = "imges", required = false) List<MultipartFile> imges) {
-
+    // 매물 생성
+    @PostMapping
+    public ApiResponse createProduct(@RequestPart("productDto") ProductDTO productDto,
+                                     @RequestPart(value = "remarkCds", required = false) List<String> remarkCds,
+                                     @RequestPart(value = "imges", required = false) List<MultipartFile> imges) {
         try {
             ProductInfo productInfo = ProductInfo.fromDto(productDto);
 
-            // remarks 배열 처리
             List<ProductRemarksInfo> remarksInfoList = Optional.ofNullable(remarkCds)
                     .orElse(Collections.emptyList())
                     .stream()
@@ -66,12 +62,11 @@ public class ProductController {
                             .build())
                     .collect(Collectors.toList());
 
-            // 이미지를 처리하여 ProductImageInfo 생성
             List<ProductImageInfo> imageInfoList = Optional.ofNullable(imges)
                     .orElse(Collections.emptyList())
                     .stream()
                     .map(image -> {
-                        String fileName = fileStorageService.saveFile(image); // 파일 저장
+                        String fileName = fileStorageService.saveFile(image);
                         return ProductImageInfo.builder()
                                 .productInfo(productInfo)
                                 .managementFileName(fileName)
@@ -82,28 +77,21 @@ public class ProductController {
                     })
                     .collect(Collectors.toList());
 
-            // ProductInfo, ProductRemarksInfo, ProductImageInfo 저장
             productService.saveProduct(productInfo, remarksInfoList, imageInfoList);
         } catch (Exception e) {
-            throw new RuntimeException(e); // return apiResponse.error();
+            return apiResponse.error();
         }
         return apiResponse.success();
     }
 
 
-    /**
-     * 매물/매매/임대 수정
-     * */
-    @PostMapping("/udpateProdInfo")
-    public ApiResponse udpateProdInfo(@RequestPart("prodNo") String strProdNo,
-            @RequestPart("productDto") ProductDTO productDto,
-                                  @RequestPart(value = "remarkCds", required = false) List<String> remarkCds,
-                                  @RequestPart(value = "imges", required = false) List<MultipartFile> imges) {
-
+    // 매물 수정
+    @PutMapping("/{prodNo}")
+    public ApiResponse updateProduct(@PathVariable Long prodNo,
+                                     @RequestPart("productDto") ProductDTO productDto,
+                                     @RequestPart(value = "remarkCds", required = false) List<String> remarkCds,
+                                     @RequestPart(value = "imges", required = false) List<MultipartFile> imges) {
         try {
-            // 기존 ProductInfo 조회
-
-            Long prodNo = Long.parseLong(strProdNo);
             ProductInfo existingProductInfo = productService.findByProdNo(prodNo);
             if (existingProductInfo == null) {
                 return apiResponse.setMessage(ErrorCode.PRD0001);
@@ -111,7 +99,6 @@ public class ProductController {
 
             existingProductInfo.updateFromDto(productDto);
 
-            // remarks 배열 처리
             List<ProductRemarksInfo> updatedRemarksInfoList = Optional.ofNullable(remarkCds)
                     .orElse(Collections.emptyList())
                     .stream()
@@ -125,13 +112,11 @@ public class ProductController {
 
             productService.updateRemarks(prodNo, updatedRemarksInfoList);
 
-
-            // 이미지를 처리하여 ProductImageInfo 생성
             List<ProductImageInfo> imageInfoList = Optional.ofNullable(imges)
                     .orElse(Collections.emptyList())
                     .stream()
                     .map(image -> {
-                        String fileName = fileStorageService.saveFile(image); // 파일 저장
+                        String fileName = fileStorageService.saveFile(image);
                         return ProductImageInfo.builder()
                                 .productInfo(existingProductInfo)
                                 .managementFileName(fileName)
@@ -142,75 +127,54 @@ public class ProductController {
                     })
                     .collect(Collectors.toList());
 
-            // ProductInfo, ProductRemarksInfo, ProductImageInfo 저장
             productService.updateSaveImg(existingProductInfo, imageInfoList);
         } catch (Exception e) {
-            throw new RuntimeException(e); // return apiResponse.error();
+            return apiResponse.error();
         }
         return apiResponse.success();
     }
 
-    /**
-     * 사진파일 리스트 가져오기
-     * */
-    @GetMapping("/getImgsrcByProdNo")
-    public ApiResponse getImgsrcByProdNo(@RequestParam HashMap<String, Object> params) {
-        Long prodNo =  Long.parseLong((String) params.get("prodNo"));
-        List<String> mngFileNm = productService.getImgsrcByProdNo(prodNo);
+    // 매물 삭제
+    @DeleteMapping("/{prodNo}")
+    public ApiResponse deleteProduct(@PathVariable Long prodNo) {
+        try {
+            productService.deleteProduct(prodNo);
+        } catch (Exception e) {
+            return apiResponse.error();
+        }
+        return apiResponse.success();
+    }
 
+    // 매물 사진 목록 조회
+    @GetMapping("/{prodNo}/images")
+    public ApiResponse getProductImages(@PathVariable Long prodNo) {
+        List<String> mngFileNm = productService.getImgsrcByProdNo(prodNo);
         return apiResponse.addResult(Constants.KEY_LIST, mngFileNm);
     }
 
-    @PostMapping("/removeServerImage")
+    // 이미지 삭제
+    @DeleteMapping("/images")
     public ApiResponse removeServerImage(@RequestBody Map<String, String> params) {
-
         try {
             String filePath = params.get("filePath");
             String fileName = filePath.substring(filePath.lastIndexOf("=") + 1);
-
             productService.removeFileAndUpdateDB(fileName);
-
-
-            // 성공 응답 반환
             return apiResponse.success();
-
         } catch (Exception e) {
-            e.printStackTrace();
-            // 실패 응답 반환
             return apiResponse.error();
         }
     }
 
-
-    /**
-     * 매물 최신일자 Update
-     */
-    @PostMapping("/updateNewDtm")
-    public ApiResponse updateNewDtm(@RequestBody Map<String, Object> params) {
+    // 최신일자 갱신
+    @PatchMapping("/{prodNo}/refresh")
+    public ApiResponse updateNewDtm(@PathVariable Long prodNo,
+                                    @RequestBody Map<String, Object> params) {
         try {
-            Long prodNo = Long.parseLong(params.get("prodNo").toString());
             Long userNo = Long.parseLong(params.get("userNo").toString());
-
-            // 매물의 newDtm 및 chg_user_id 업데이트
             productService.updateNewDtm(prodNo, userNo);
         } catch (Exception e) {
             return apiResponse.error();
         }
         return apiResponse.success();
     }
-
-
-    /**
-     * 매물 Delete
-     */
-    @PostMapping("/deleteProduct")
-    public ApiResponse deleteProduct(@RequestBody Map<String, Object> prams) {
-        try {
-            productService.deleteProduct( Long.parseLong(prams.get("prodNo").toString()));
-        } catch (Exception e) {
-            return apiResponse.error();
-        }
-        return apiResponse.success();
-    }
-
 }
