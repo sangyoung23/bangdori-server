@@ -18,14 +18,15 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/comm/code")
+@RequestMapping("/codes")
 public class CodeController {
 
     private final CodeService codeService;
     private final ApiResponse apiResponse;
 
-    @GetMapping("/commCodes")
-    public ApiResponse getCommList(@RequestParam HashMap<String, Object> params) {
+    // 공통 코드 조회
+    @GetMapping("/grouped")
+    public ApiResponse getGroupedCodes() {
         Map<String, List<CodeDTO>> codeList = codeService.getGroupedCommCodeList();
         return apiResponse.addResult(Constants.KEY_LIST, codeList);
     }
