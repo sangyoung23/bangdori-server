@@ -9,7 +9,7 @@ import bangdori.api.domain.product.entity.ProductInfo;
 import bangdori.api.domain.product.entity.ProductRemarksInfo;
 import bangdori.api.domain.product.service.FileStorageService;
 import bangdori.api.domain.product.service.ProductService;
-import bangdori.api.domain.user.dto.UserPulicInfoDTO;
+import bangdori.api.domain.user.dto.UserPublicInfoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +39,7 @@ public class ProductController {
     // 관리자 정보 조회
     @GetMapping("/users")
     public ApiResponse getUserList(@RequestParam Long userNo) {
-        List<UserPulicInfoDTO> userInfoList = productService.getUserList(userNo);
+        List<UserPublicInfoDTO> userInfoList = productService.getUserList(userNo);
         return apiResponse.addResult(Constants.KEY_LIST, userInfoList);
     }
 

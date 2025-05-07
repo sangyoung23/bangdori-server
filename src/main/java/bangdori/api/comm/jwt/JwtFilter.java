@@ -20,7 +20,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = resolveToken(request); // 요청에서 토큰 추출
 
-        if (request.getRequestURI().equals("/api/user/login")|| request.getRequestURI().equals("/api/ContentItem")) {
+        if (request.getRequestURI().equals("/api/users/auth/login")|| request.getRequestURI().equals("/api/ContentItem")) {
             filterChain.doFilter(request, response); // 필터를 건너뛰고 다음 필터로 이동
             return;
         }

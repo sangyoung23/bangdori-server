@@ -10,12 +10,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class  UserPulicInfoDTO {
+public class  UserPublicInfoDTO {
     private Long userNo;
     private String name;
 
     // UserInfo 엔티티에서 필요한 필드만 추출
-    public static UserPulicInfoDTO fromEntity(UserInfo userInfo) {
-        return new UserPulicInfoDTO(userInfo.getUserNo(), userInfo.getName());
+    public static UserPublicInfoDTO fromEntity(UserInfo userInfo) {
+        return new UserPublicInfoDTO(userInfo.getUserNo(), userInfo.getName());
     }
 }

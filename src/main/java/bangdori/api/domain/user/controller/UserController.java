@@ -26,7 +26,7 @@ public class UserController {
     public ApiResponse Login(@RequestBody Map<String, String> params) {
         String id = params.get("id");
         byte[] decodedBytes = Base64.getDecoder().decode(params.get("password"));
-        String password = new String(decodedBytes);;
+        String password = new String(decodedBytes);
         // 사용자 인중
         UserInfoDto userInfoDto = userService.authenticate(id, password);
 

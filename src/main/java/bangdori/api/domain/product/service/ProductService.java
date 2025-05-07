@@ -7,7 +7,7 @@ import bangdori.api.domain.product.entity.ProductImageInfo;
 import bangdori.api.domain.product.entity.ProductInfo;
 import bangdori.api.domain.product.entity.ProductRemarksInfo;
 import bangdori.api.domain.product.repository.ProductImageInfoRepository;
-import bangdori.api.domain.user.dto.UserPulicInfoDTO;
+import bangdori.api.domain.user.dto.UserPublicInfoDTO;
 import bangdori.api.domain.user.entity.UserInfo;
 import bangdori.api.domain.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -182,7 +182,7 @@ public List<ProductDTO> getProductList(Long corpNo) {
         productImageInfoRepository.saveAll(updatedImageInfoList);
     }
 
-    public List<UserPulicInfoDTO> getUserList(Long userNo) {
+    public List<UserPublicInfoDTO> getUserList(Long userNo) {
         return userRepository.findByCorpInfoOfUserNo(userNo);
     }
 }
