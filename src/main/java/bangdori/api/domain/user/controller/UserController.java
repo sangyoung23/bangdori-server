@@ -33,26 +33,24 @@ public class UserController {
 
         // JWT 토근 생성
         String token = tokenProvider.createToken(userInfoDto.toAuthentication(),userInfoDto.getUserNo());
- 
-        return new ApiResponse().addResult(Map.of(
-                "token", token,
-                "userNo", userInfoDto.getUserNo(),
-                "userId", userInfoDto.getId(),
-                "username", userInfoDto.getName(),
-                "corpNo", userInfoDto.getCorpNo(),
-                "corpNm", userInfoDto.getCorpNm()
-        ));
+
+        return new ApiResponse()
+                .success()
+                .addResult(Map.of(
+                        "token", token,
+                        "userNo", userInfoDto.getUserNo(),
+                        "userId", userInfoDto.getId(),
+                        "username", userInfoDto.getName(),
+                        "corpNo", userInfoDto.getCorpNo(),
+                        "corpNm", userInfoDto.getCorpNm()
+                ));
     }
 
     // 회원 정보 수정
     @PutMapping("/{userNo}")
     public ApiResponse updateUserInfo(@PathVariable Long userNo ,@RequestBody UserUpdateDto userUpdateDto) {
-        try {
             userUpdateDto.setUserNo(userNo);
             userService.updateUserForm(userUpdateDto);
             return new ApiResponse().success();
-        } catch (Exception e) {
-            return new ApiResponse().error();
-        }
     }
 }
