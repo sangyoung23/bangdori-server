@@ -31,19 +31,19 @@ public class ProductService {
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
 
-public List<ProductDTO> getProductList(Long corpNo) {
-    List<ProductInfo> products = productRepository.findAllByUseYnAndCorpNoOrderByNewDtmDesc("1", corpNo );
+    public List<ProductDTO> getProductList(Long corpNo) {
+        List<ProductInfo> products = productRepository.findAllWithRemarksByUseYnAndCorpNo("1", corpNo);
 
-    return products.stream().map(product -> {
-        // ProductInfo 엔티티를 DTO로 변환하면서, 해당 ProductInfo에 해당하는 모든 remarkCd를 가져오기
-        List<String> remarkCds = productRemarksInfoRepository.findByProductInfoProdNo(product.getProdNo())
-                .stream()
-                .map(ProductRemarksInfo::getRemarkCd)
-                .collect(Collectors.toList());  // 여러 개의 remarkCd를 리스트로 수집
+        return products.stream().map(product -> {
+            // 연관된 remarks를 바로 꺼냄
+            List<String> remarkCds = product.getProductRemarksInfos()
+                    .stream()
+                    .map(ProductRemarksInfo::getRemarkCd)
+                    .collect(Collectors.toList());
 
-        return ProductDTO.fromEntity(product, remarkCds); // remarkCd 리스트를 전달하여 DTO 생성
-    }).collect(Collectors.toList());
-}
+            return ProductDTO.fromEntity(product, remarkCds);
+        }).collect(Collectors.toList());
+    }
 
     @Transactional
     public void saveProduct(ProductInfo productInfo, List<ProductRemarksInfo> remarksInfoList , List<ProductImageInfo> imageInfoList) {
@@ -126,7 +126,7 @@ public List<ProductDTO> getProductList(Long corpNo) {
 
 
     @Transactional
-    public void removeFileAndUpdateDB(String fileName) throws Exception {
+    public void removeFileAndUpdateDB(String fileName) {
         // 1. 파일 삭제 처리  >> 나중에 합시다 ?
        /* Path file = Paths.get("static/" + fileName); // 파일 경로
         System.out.println("this error********* file:     "+ file);
@@ -143,7 +143,7 @@ public List<ProductDTO> getProductList(Long corpNo) {
         System.out.println("fileName ?? " + fileName);
         // DB 업데이트가 되지 않았다면 예외 처리
         if (updateCount == 0) {
-            throw new Exception("파일의 useYn 업데이트 실패");
+            throw new IllegalArgumentException("파일의 useYn 업데이트 실패");
         }
     }
 

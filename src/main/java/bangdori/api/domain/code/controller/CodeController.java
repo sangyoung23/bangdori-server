@@ -20,12 +20,13 @@ import java.util.Map;
 public class CodeController {
 
     private final CodeService codeService;
-    private final ApiResponse apiResponse;
 
     // 공통 코드 조회
     @GetMapping("/grouped")
     public ApiResponse getGroupedCodes() {
         Map<String, List<CodeDTO>> codeList = codeService.getGroupedCommCodeList();
-        return apiResponse.addResult(Constants.KEY_LIST, codeList);
+        return new ApiResponse()
+                .success()
+                .addResult(Constants.KEY_LIST, codeList);
     }
 }
