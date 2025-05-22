@@ -14,16 +14,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+
+    @Value("${env.serverUrl}")
+    String serverUrl;
 
     private final ProductRepository productRepository;
     private final ProductRemarksInfoRepository productRemarksInfoRepository;
@@ -35,7 +38,6 @@ public class ProductService {
         List<ProductInfo> products = productRepository.findAllWithRemarksByUseYnAndCorpNo("1", corpNo);
 
         return products.stream().map(product -> {
-            // 연관된 remarks를 바로 꺼냄
             List<String> remarkCds = product.getProductRemarksInfos()
                     .stream()
                     .map(ProductRemarksInfo::getRemarkCd)
@@ -46,38 +48,75 @@ public class ProductService {
     }
 
     @Transactional
-    public void saveProduct(ProductInfo productInfo, List<ProductRemarksInfo> remarksInfoList , List<ProductImageInfo> imageInfoList) {
-        // ProductInfo 저장
-
+    public void saveProduct(ProductInfo productInfo, List<ProductRemarksInfo> remarksInfoList, List<ProductImageInfo> imageInfoList) {
         ProductInfo savedProductInfo = productRepository.save(productInfo);
 
-        List<ProductRemarksInfo> updatedRemarksInfoList = remarksInfoList.stream()
+        List<ProductRemarksInfo> remarks = buildRemarksInfoList(remarksInfoList, savedProductInfo);
+        productRemarksInfoRepository.saveAll(remarks);
+
+        List<ProductImageInfo> images = buildImageInfoList(imageInfoList, savedProductInfo);
+        productImageInfoRepository.saveAll(images);
+    }
+
+    private List<ProductRemarksInfo> buildRemarksInfoList(List<ProductRemarksInfo> remarksInfoList, ProductInfo productInfo) {
+        return remarksInfoList.stream()
                 .map(remarksInfo -> ProductRemarksInfo.builder()
-                        .productInfo(savedProductInfo)   // 저장된 productInfo 객체를 설정
-                        .remarkCd(remarksInfo.getRemarkCd())  // remarkCd 설정
-                        .useYn("1")                 // 기본값 Y 설정
-                        .regDtm(LocalDateTime.now()) // 현재 시간으로 등록일시 설정
+                        .productInfo(productInfo)
+                        .remarkCd(remarksInfo.getRemarkCd())
+                        .useYn("1")
+                        .regDtm(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
-        // ProductRemarksInfo 저장
-        productRemarksInfoRepository.saveAll(updatedRemarksInfoList);
+    }
 
-        // 3. ProductImageInfo 저장
-        List<ProductImageInfo> updatedImageInfoList = imageInfoList.stream()
+    private List<ProductImageInfo> buildImageInfoList(List<ProductImageInfo> imageInfoList, ProductInfo productInfo) {
+        return imageInfoList.stream()
                 .map(imageInfo -> ProductImageInfo.builder()
-                        .productInfo(savedProductInfo)
+                        .productInfo(productInfo)
                         .managementFileName(imageInfo.getManagementFileName())
                         .realFileName(imageInfo.getRealFileName())
                         .useYn("1")
                         .regDtm(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
-        productImageInfoRepository.saveAll(updatedImageInfoList);
     }
 
+    public void createProduct(ProductDTO productDto, List<String> remarkCds, List<MultipartFile> imges) {
+        ProductInfo productInfo = ProductInfo.fromDto(productDto);
+
+        List<ProductRemarksInfo> remarksInfoList = Optional.ofNullable(remarkCds)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(remarkCd -> ProductRemarksInfo.builder()
+                        .productInfo(productInfo)
+                        .remarkCd(remarkCd)
+                        .useYn("1")
+                        .regDtm(LocalDateTime.now())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<ProductImageInfo> imageInfoList = Optional.ofNullable(imges)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(image -> {
+                    String fileName = fileStorageService.saveFile(image);
+                    return ProductImageInfo.builder()
+                            .productInfo(productInfo)
+                            .managementFileName(fileName)
+                            .realFileName(image.getOriginalFilename())
+                            .useYn("1")
+                            .regDtm(LocalDateTime.now())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        saveProduct(productInfo, remarksInfoList, imageInfoList);
+    }
 
     @Transactional
-    public void updateNewDtm(Long prodNo, Long userNo) {
+    public void updateNewDtm(Long prodNo, Map<String, Object> params) {
+        Long userNo = Long.parseLong(params.get("userNo").toString());
+
         ProductInfo product = productRepository.findById(prodNo)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
 
@@ -87,9 +126,6 @@ public class ProductService {
         product.updateNewDtm();
         product.updateChgUserId(user.getUserNo());
 
-
-
-        // 저장
         productRepository.save(product);
     }
 
@@ -102,11 +138,6 @@ public class ProductService {
             throw new IllegalArgumentException("Product not found with id: " + prodNo);
         }
     }
-
-
-    @Value("${env.serverUrl}")
-    String serverUrl;
-
 
     public List<String> getImgsrcByProdNo (Long prodNo){
         List<String> mngFileNms =  productImageInfoRepository.findByProductInfoProdNoAndUseYn(prodNo,"1")
@@ -124,62 +155,68 @@ public class ProductService {
      return mngFileNm;
     }
 
-
     @Transactional
-    public void removeFileAndUpdateDB(String fileName) {
-        // 1. 파일 삭제 처리  >> 나중에 합시다 ?
-       /* Path file = Paths.get("static/" + fileName); // 파일 경로
-        System.out.println("this error********* file:     "+ file);
-
-        boolean fileDeleted = Files.deleteIfExists(file); // 파일이 존재하면 삭제
-        System.out.println("this error********* fileDeleted  :     "+ fileDeleted);
-*/
-        // 2. DB에서 해당 파일 정보의 useYn을 0으로 업데이트
-
-        // 파일명으로 해당 파일 정보를 찾고, useYn을 "N"으로 업데이트
-        System.out.println("fileName ?? " + fileName);
+    public void removeFileAndUpdateDB(Map<String, String> params) {
+        String filePath = params.get("filePath");
+        String fileName = filePath.substring(filePath.lastIndexOf("=") + 1);
         int updateCount = productImageInfoRepository.updateUseYnByRealFileName(fileName, "0");
 
-        System.out.println("fileName ?? " + fileName);
-        // DB 업데이트가 되지 않았다면 예외 처리
         if (updateCount == 0) {
             throw new IllegalArgumentException("파일의 useYn 업데이트 실패");
         }
     }
 
-    public ProductInfo findByProdNo(Long prodNo) {
-        return productRepository.findByProdNo(prodNo).orElse(null);
+    @Transactional
+    public void updateProduct(Long prodNo, ProductDTO productDto, List<String> remarkCds, List<MultipartFile> images) {
+        ProductInfo existingProductInfo = productRepository.findByProdNo(prodNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당 매물 정보를 찾을 수 없습니다."));
+
+        existingProductInfo.updateFromDto(productDto);
+
+        updateRemarks(prodNo, remarkCds);
+        updateImages(existingProductInfo, images);
     }
 
-    @Transactional
-    public void updateRemarks(Long prodNo, List<ProductRemarksInfo> updatedRemarksInfoList) {
-        // 상품 번호로 관련 remarks 조회
+    private void updateRemarks(Long prodNo, List<String> remarkCds) {
         List<ProductRemarksInfo> existingRemarks = productRemarksInfoRepository.findByProductInfoProdNo(prodNo);
-        
-        // 기존 remarks 데이터 삭제
+
         if (!existingRemarks.isEmpty()) {
-            productRemarksInfoRepository.updateUseYnByProdNo(prodNo , "0");
+            productRemarksInfoRepository.updateUseYnByProdNo(prodNo, "0");
         }
 
-        // 새로운 remarks 데이터 저장
-        productRemarksInfoRepository.saveAll(updatedRemarksInfoList);
-    }
+        if (remarkCds == null || remarkCds.isEmpty()) {
+            return;
+        }
 
-
-    @Transactional
-    public void updateSaveImg(ProductInfo existingProductInfo, List<ProductImageInfo> imageInfoList) {
-
-        List<ProductImageInfo> updatedImageInfoList = imageInfoList.stream()
-                .map(imageInfo -> ProductImageInfo.builder()
-                        .productInfo(existingProductInfo)
-                        .managementFileName(imageInfo.getManagementFileName())
-                        .realFileName(imageInfo.getRealFileName())
+        List<ProductRemarksInfo> newRemarks = remarkCds.stream()
+                .map(remarkCd -> ProductRemarksInfo.builder()
+                        .productInfo(ProductInfo.builder().prodNo(prodNo).build())
+                        .remarkCd(remarkCd)
                         .useYn("1")
                         .regDtm(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
 
-        productImageInfoRepository.saveAll(updatedImageInfoList);
+        productRemarksInfoRepository.saveAll(newRemarks);
+    }
+
+    private void updateImages(ProductInfo productInfo, List<MultipartFile> images) {
+        if (images == null || images.isEmpty()) return;
+
+        List<ProductImageInfo> imageInfoList = images.stream()
+                .map(image -> {
+                    String fileName = fileStorageService.saveFile(image);
+                    return ProductImageInfo.builder()
+                            .productInfo(productInfo)
+                            .managementFileName(fileName)
+                            .realFileName(image.getOriginalFilename())
+                            .useYn("1")
+                            .regDtm(LocalDateTime.now())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        productImageInfoRepository.saveAll(imageInfoList);
     }
 
     public List<UserPublicInfoDTO> getUserList(Long userNo) {
