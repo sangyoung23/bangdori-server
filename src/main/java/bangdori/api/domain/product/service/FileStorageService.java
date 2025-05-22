@@ -1,5 +1,6 @@
 package bangdori.api.domain.product.service;
 
+import bangdori.api.comm.exception.FileStorageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,10 @@ public class FileStorageService {
     @Value("${path.image}") String path;
 
     public String saveFile(MultipartFile file) {
-
         try {
-
             Path directoryPath = Paths.get(path);
             if (!Files.exists(directoryPath)) {
-                Files.createDirectories(directoryPath); // 경로가 없으면 생성
+                Files.createDirectories(directoryPath);
             }
             String fileNmForExt = file.getOriginalFilename();
             String ext = fileNmForExt.substring(fileNmForExt.lastIndexOf(".") + 1);
@@ -36,8 +35,8 @@ public class FileStorageService {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return fileName;
 
-        } catch (IOException ex) {
-            throw new RuntimeException("파일 저장 실패: " + file.getOriginalFilename(), ex);
+        } catch (IOException e) {
+            throw new FileStorageException("파일 저장 실패: " + file.getOriginalFilename(), e);
         }
     }
 }
