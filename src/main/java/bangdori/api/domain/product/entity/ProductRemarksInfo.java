@@ -24,7 +24,7 @@ public class ProductRemarksInfo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROD_NO", nullable = false)
     @JsonBackReference
-    private ProductInfo productInfo; // FK → TB_PRODUCT_INFO
+    private ProductInfo productInfo;
 
     @Column(name = "REMARK_CD", length = 50, nullable = false)
     private String remarkCd;
