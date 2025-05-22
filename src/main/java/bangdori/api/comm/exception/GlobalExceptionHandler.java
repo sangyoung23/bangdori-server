@@ -54,4 +54,12 @@ public class GlobalExceptionHandler {
                 .setTrace(e.getMessage());
     }
 
+    // 파일 저장 실패 처리
+    @ExceptionHandler(FileStorageException.class)
+    public ApiResponse handleFileStorageException(FileStorageException e) {
+        return new ApiResponse()
+                .fail(VALUE_STATUS_RUNTIME_ERROR, "파일 저장 중 오류가 발생했습니다.")
+                .setTrace(e.getMessage());
+    }
+
 }
