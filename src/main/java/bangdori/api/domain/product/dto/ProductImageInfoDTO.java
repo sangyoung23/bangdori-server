@@ -10,17 +10,17 @@ import java.time.LocalDateTime;
 @Getter
 public class ProductImageInfoDTO {
 
-    private Long seqNo; // 일련번호
-    private Long prodNo; // 매물 고유번호 (외래키)
-    private String managementFileName; // 관리 파일명
-    private String realFileName; // 실제 파일명
-    private String useYn; // 사용 여부
-    private LocalDateTime regDtm; // 등록 일시
+    private Long seqNo;
+    private Long prodNo;
+    private String managementFileName;
+    private String realFileName;
+    private String useYn;
+    private LocalDateTime regDtm;
 
     public static ProductImageInfoDTO fromEntity(ProductImageInfo productImageInfo) {
         return new ProductImageInfoDTO(
                 productImageInfo.getSeqNo(),
-                productImageInfo.getProductInfo().getProdNo(), // ProductInfo에서 prodNo를 가져옴
+                productImageInfo.getProductInfo().getProdNo(),
                 productImageInfo.getManagementFileName(),
                 productImageInfo.getRealFileName(),
                 productImageInfo.getUseYn(),

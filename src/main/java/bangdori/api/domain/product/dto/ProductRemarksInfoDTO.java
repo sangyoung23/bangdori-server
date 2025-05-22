@@ -10,17 +10,16 @@ import java.time.LocalDateTime;
 @Getter
 public class ProductRemarksInfoDTO {
 
-    private Long seqNo;        // 일련번호
-    private Long prodNo;       // 매물 정보 고유 번호
-    private String remarkCd;   // 특이사항 코드
-    private String useYn;      // 사용여부
-    private LocalDateTime regDtm; // 등록일시
+    private Long seqNo;
+    private Long prodNo;
+    private String remarkCd;
+    private String useYn;
+    private LocalDateTime regDtm;
 
-    // 엔티티에서 DTO로 변환하는 메서드
     public static ProductRemarksInfoDTO fromEntity(ProductRemarksInfo productRemarksInfo) {
         return new ProductRemarksInfoDTO(
                 productRemarksInfo.getSeqNo(),
-                productRemarksInfo.getProductInfo().getProdNo(),  // ProductInfo에서 prodNo를 가져옴
+                productRemarksInfo.getProductInfo().getProdNo(),
                 productRemarksInfo.getRemarkCd(),
                 productRemarksInfo.getUseYn(),
                 productRemarksInfo.getRegDtm()

@@ -14,7 +14,6 @@ public class Constants {
     public static final String KEY_PAGE_REQUEST_PAGE_SIZE = "pageSize";
     public static final String KEY_PAGE_REQUEST_PAGE_NUMBER = "pageNum";
 
-    public static final String KEY_PAGE_ROW_ID = "PAGEHELPER_ROW_ID";
     public static final String KEY_PAGE_TOTAL_ROW = "TOTAL_ROW";
     public static final String KEY_PAGE_PAGE_COUNT = "PAGE_CNT";
     public static final String KEY_PAGE_PAGE_SIZE = "PAGE_SIZE";

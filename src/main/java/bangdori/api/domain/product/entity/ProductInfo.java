@@ -129,13 +129,11 @@ public class ProductInfo {
     private LocalDateTime chgDtm;
 
     @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY)
-    @JsonBackReference  // 순환 참조 방지
+    @JsonBackReference
     private List<ProductRemarksInfo> productRemarksInfos;
 
-    // ProductDto로부터 ProductInfo 엔티티를 생성하는 @Builder를 사용한 fromDto 메서드
     public static ProductInfo fromDto(ProductDTO dto) {
         return ProductInfo.builder()
-                //.prodNo(dto.getProdNo()) //insert 할때 오류나는데...
                 .corpNo(dto.getCorpNo())
                 .tradeType(dto.getTradeType())
                 .title(dto.getTitle())
@@ -166,10 +164,10 @@ public class ProductInfo {
                 .prodDtlAddr(dto.getProdDtlAddr())
                 .prodMngUser(dto.getProdMngUser())
                 .newDtm(LocalDateTime.now())
-                .useYn("1") // 기본값 설정
+                .useYn("1")
                 .regDtm(LocalDateTime.now())
                 .chgUserId(dto.getChgUserId())
-                .regUserId(dto.getRegUserId())// 등록일시 설정
+                .regUserId(dto.getRegUserId())
                 .build();
     }
 
@@ -264,8 +262,8 @@ public class ProductInfo {
         this.prodRoadAddr = dto.getProdRoadAddr();
         this.prodDtlAddr = dto.getProdDtlAddr();
         this.prodMngUser = dto.getProdMngUser();
-        this.newDtm = LocalDateTime.now(); // 변경 시간 업데이트
-        this.chgDtm = LocalDateTime.now(); // 변경 시간 업데이트
+        this.newDtm = LocalDateTime.now();
+        this.chgDtm = LocalDateTime.now();
     }
 
 }

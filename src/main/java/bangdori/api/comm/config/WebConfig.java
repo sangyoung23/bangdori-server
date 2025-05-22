@@ -11,7 +11,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 정적 리소스를 서빙할 위치를 명시적으로 설정
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")
                 .setCacheControl(CacheControl.noCache().cachePrivate().mustRevalidate());
