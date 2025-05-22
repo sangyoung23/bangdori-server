@@ -46,12 +46,9 @@ public class TokenProvider implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         try {
-            // Base64 디코딩된 secret 값으로 HMAC 키를 생성
             byte[] keyBytes = Decoders.BASE64.decode(secret);
             this.key = Keys.hmacShaKeyFor(keyBytes);
 
-
-            // 디코딩된 키를 Base64로 다시 출력하여 확인 가능 (디버깅용)
             logger.info("Signing key initialized: {}", Base64.getEncoder().encodeToString(keyBytes));
         } catch (IllegalArgumentException e) {
             logger.error("Invalid JWT secret key: The secret must be a valid Base64-encoded string.", e);

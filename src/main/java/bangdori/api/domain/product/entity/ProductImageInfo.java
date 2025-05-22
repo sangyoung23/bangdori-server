@@ -20,28 +20,27 @@ public class ProductImageInfo {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROD_NO", nullable = false)
-    private ProductInfo productInfo; // Foreign Key - 매물 정보
+    private ProductInfo productInfo;
 
     @Column(name = "MNG_FILE_NM", length = 255, nullable = false)
-    private String managementFileName; // 관리 파일명
+    private String managementFileName;
 
     @Column(name = "REAL_FILE_NM", length = 255, nullable = false)
-    private String realFileName; // 실제 파일명
+    private String realFileName;
 
     @Column(name = "USE_YN", length = 1, nullable = false)
-    private String useYn; // 사용 여부
+    private String useYn;
 
     @Column(name = "REG_DTM", nullable = false)
-    private LocalDateTime regDtm; // 등록 일시
+    private LocalDateTime regDtm;
 
-    // DTO로부터 엔티티를 생성하는 fromDto 메서드
     public static ProductImageInfo fromDto(ProductImageInfo dto, ProductInfo productInfo) {
         return ProductImageInfo.builder()
                 .productInfo(productInfo)
                 .managementFileName(dto.getManagementFileName())
                 .realFileName(dto.getRealFileName())
                 .useYn(dto.getUseYn())
-                .regDtm(LocalDateTime.now()) // 등록 일시 설정
+                .regDtm(LocalDateTime.now())
                 .build();
     }
 

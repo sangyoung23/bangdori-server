@@ -2,15 +2,14 @@ package bangdori.api.domain.code.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Entity
 @Table(name = "tb_code_info")
 public class CodeInfo {
 
-    @Id // 유니크 키 설정
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가(옵션 선택 가능)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "SEQ_NO", nullable = false)
     private Long seqNo;
 
