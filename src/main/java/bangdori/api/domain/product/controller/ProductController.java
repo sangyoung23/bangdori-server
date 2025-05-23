@@ -42,9 +42,9 @@ public class ProductController {
     @PostMapping
     public ApiResponse createProduct(@RequestPart("productDto") ProductDTO productDto,
                                      @RequestPart(value = "remarkCds", required = false) List<String> remarkCds,
-                                     @RequestPart(value = "imges", required = false) List<MultipartFile> imges) {
+                                     @RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
-        productService.createProduct(productDto, remarkCds, imges);
+        productService.createProduct(productDto, remarkCds, images);
         return new ApiResponse().success();
     }
 
@@ -54,9 +54,9 @@ public class ProductController {
             @PathVariable Long prodNo,
             @RequestPart("productDto") ProductDTO productDto,
             @RequestPart(value = "remarkCds", required = false) List<String> remarkCds,
-            @RequestPart(value = "imges", required = false) List<MultipartFile> imges) {
+            @RequestPart(value = "images", required = false) List<MultipartFile> images) {
 
-        productService.updateProduct(prodNo, productDto, remarkCds, imges);
+        productService.updateProduct(prodNo, productDto, remarkCds, images);
         return new ApiResponse().success();
     }
 

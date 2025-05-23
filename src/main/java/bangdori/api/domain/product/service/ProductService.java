@@ -84,7 +84,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public void createProduct(ProductDTO productDto, List<String> remarkCds, List<MultipartFile> imges) {
+    public void createProduct(ProductDTO productDto, List<String> remarkCds, List<MultipartFile> images) {
         ProductInfo productInfo = ProductInfo.fromDto(productDto);
 
         List<ProductRemarksInfo> remarksInfoList = Optional.ofNullable(remarkCds)
@@ -98,7 +98,7 @@ public class ProductService {
                         .build())
                 .collect(Collectors.toList());
 
-        List<ProductImageInfo> imageInfoList = Optional.ofNullable(imges)
+        List<ProductImageInfo> imageInfoList = Optional.ofNullable(images)
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(image -> {
