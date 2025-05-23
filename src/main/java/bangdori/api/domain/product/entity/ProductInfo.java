@@ -1,5 +1,6 @@
 package bangdori.api.domain.product.entity;
 
+import bangdori.api.comm.Constants;
 import bangdori.api.domain.product.dto.ProductDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -164,7 +165,7 @@ public class ProductInfo {
                 .prodDtlAddr(dto.getProdDtlAddr())
                 .prodMngUser(dto.getProdMngUser())
                 .newDtm(LocalDateTime.now())
-                .useYn("1")
+                .useYn(Constants.USE_YN_TRUE)
                 .regDtm(LocalDateTime.now())
                 .chgUserId(dto.getChgUserId())
                 .regUserId(dto.getRegUserId())

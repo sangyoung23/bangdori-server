@@ -38,7 +38,7 @@ public class ProductService {
     private final FileStorageService fileStorageService;
 
     public List<ProductDTO> getProductList(Long corpNo) {
-        List<ProductInfo> products = productRepository.findAllWithRemarksByUseYnAndCorpNo("1", corpNo);
+        List<ProductInfo> products = productRepository.findAllWithRemarksByUseYnAndCorpNo(Constants.USE_YN_TRUE, corpNo);
 
         return products.stream().map(product -> {
             List<String> remarkCds = product.getProductRemarksInfos()
@@ -143,7 +143,7 @@ public class ProductService {
     }
 
     public List<String> getImgsrcByProdNo (Long prodNo){
-        List<String> mngFileNms =  productImageInfoRepository.findByProductInfoProdNoAndUseYn(prodNo,"1")
+        List<String> mngFileNms =  productImageInfoRepository.findByProductInfoProdNoAndUseYn(prodNo,Constants.USE_YN_TRUE)
                 .stream()
                 .map(ProductImageInfo::getManagementFileName)
                 .collect(Collectors.toList());
@@ -162,7 +162,7 @@ public class ProductService {
     public void removeFileAndUpdateDB(ImageDeleteRequest request) {
         String filePath = request.getFilePath();
         String fileName = filePath.substring(filePath.lastIndexOf("=") + 1);
-        int updateCount = productImageInfoRepository.updateUseYnByRealFileName(fileName, "0");
+        int updateCount = productImageInfoRepository.updateUseYnByRealFileName(fileName, Constants.USE_YN_FALSE);
 
         if (updateCount == 0) {
             throw new IllegalArgumentException("파일의 useYn 업데이트 실패");
