@@ -2,7 +2,9 @@ package bangdori.api.domain.product.controller;
 
 import bangdori.api.comm.response.ApiResponse;
 import bangdori.api.comm.Constants;
+import bangdori.api.domain.product.dto.ImageDeleteRequest;
 import bangdori.api.domain.product.dto.ProductDTO;
+import bangdori.api.domain.product.dto.ProductRefreshDTO;
 import bangdori.api.domain.product.service.ProductService;
 import bangdori.api.domain.user.dto.UserPublicInfoDTO;
 import lombok.RequiredArgsConstructor;
@@ -76,16 +78,16 @@ public class ProductController {
 
     // 이미지 삭제
     @DeleteMapping("/images")
-    public ApiResponse removeServerImage(@RequestBody Map<String, String> params) {
-        productService.removeFileAndUpdateDB(params);
+    public ApiResponse removeServerImage(@RequestBody ImageDeleteRequest request) {
+        productService.removeFileAndUpdateDB(request);
         return new ApiResponse().success();
     }
 
     // 최신일자 갱신
     @PatchMapping("/{prodNo}/refresh")
     public ApiResponse updateNewDtm(@PathVariable Long prodNo,
-                                    @RequestBody Map<String, Object> params) {
-        productService.updateNewDtm(prodNo, params);
+                                    @RequestBody ProductRefreshDTO refreshDTO) {
+        productService.updateNewDtm(prodNo, refreshDTO);
         return new ApiResponse().success();
     }
 }

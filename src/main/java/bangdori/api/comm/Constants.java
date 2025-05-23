@@ -24,6 +24,9 @@ public class Constants {
     public static final int VALUE_PAGE_DEFAULT_PAGE_NUMBER = 1;
     public static final int VALUE_PAGE_MIN_PAGE_SIZE = 10;
 
+    public static final String USE_YN_TRUE = "1";
+    public static final String USE_YN_FALSE = "0";
+
 
 
 }
