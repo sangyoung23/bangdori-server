@@ -1,5 +1,8 @@
 package bangdori.api.domain.product.service;
 
+import bangdori.api.comm.Constants;
+import bangdori.api.domain.product.dto.ImageDeleteRequest;
+import bangdori.api.domain.product.dto.ProductRefreshDTO;
 import bangdori.api.domain.product.repository.ProductRemarksInfoRepository;
 import bangdori.api.domain.product.repository.ProductRepository;
 import bangdori.api.domain.product.dto.ProductDTO;
@@ -63,7 +66,7 @@ public class ProductService {
                 .map(remarksInfo -> ProductRemarksInfo.builder()
                         .productInfo(productInfo)
                         .remarkCd(remarksInfo.getRemarkCd())
-                        .useYn("1")
+                        .useYn(Constants.USE_YN_TRUE)
                         .regDtm(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
@@ -75,7 +78,7 @@ public class ProductService {
                         .productInfo(productInfo)
                         .managementFileName(imageInfo.getManagementFileName())
                         .realFileName(imageInfo.getRealFileName())
-                        .useYn("1")
+                        .useYn(Constants.USE_YN_TRUE)
                         .regDtm(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
@@ -90,7 +93,7 @@ public class ProductService {
                 .map(remarkCd -> ProductRemarksInfo.builder()
                         .productInfo(productInfo)
                         .remarkCd(remarkCd)
-                        .useYn("1")
+                        .useYn(Constants.USE_YN_TRUE)
                         .regDtm(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
@@ -104,7 +107,7 @@ public class ProductService {
                             .productInfo(productInfo)
                             .managementFileName(fileName)
                             .realFileName(image.getOriginalFilename())
-                            .useYn("1")
+                            .useYn(Constants.USE_YN_TRUE)
                             .regDtm(LocalDateTime.now())
                             .build();
                 })
@@ -114,14 +117,14 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateNewDtm(Long prodNo, Map<String, Object> params) {
-        Long userNo = Long.parseLong(params.get("userNo").toString());
+    public void updateNewDtm(Long prodNo, ProductRefreshDTO refreshDTO) {
+        Long userNo = refreshDTO.getUserNo();
 
         ProductInfo product = productRepository.findById(prodNo)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+                .orElseThrow(() -> new IllegalArgumentException("해당 매물을 찾을 수 없습니다."));
 
         UserInfo user = userRepository.findById(userNo)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
 
         product.updateNewDtm();
         product.updateChgUserId(user.getUserNo());
@@ -133,7 +136,7 @@ public class ProductService {
     public void deleteProduct(Long prodNo) {
         ProductInfo productInfo = productRepository.findById(prodNo).orElse(null);
         if (productInfo != null) {
-            productInfo.updateUseYn("0");
+            productInfo.updateUseYn(Constants.USE_YN_FALSE);
         } else {
             throw new IllegalArgumentException("Product not found with id: " + prodNo);
         }
@@ -156,8 +159,8 @@ public class ProductService {
     }
 
     @Transactional
-    public void removeFileAndUpdateDB(Map<String, String> params) {
-        String filePath = params.get("filePath");
+    public void removeFileAndUpdateDB(ImageDeleteRequest request) {
+        String filePath = request.getFilePath();
         String fileName = filePath.substring(filePath.lastIndexOf("=") + 1);
         int updateCount = productImageInfoRepository.updateUseYnByRealFileName(fileName, "0");
 
@@ -181,7 +184,7 @@ public class ProductService {
         List<ProductRemarksInfo> existingRemarks = productRemarksInfoRepository.findByProductInfoProdNo(prodNo);
 
         if (!existingRemarks.isEmpty()) {
-            productRemarksInfoRepository.updateUseYnByProdNo(prodNo, "0");
+            productRemarksInfoRepository.updateUseYnByProdNo(prodNo, Constants.USE_YN_FALSE);
         }
 
         if (remarkCds == null || remarkCds.isEmpty()) {
@@ -192,7 +195,7 @@ public class ProductService {
                 .map(remarkCd -> ProductRemarksInfo.builder()
                         .productInfo(ProductInfo.builder().prodNo(prodNo).build())
                         .remarkCd(remarkCd)
-                        .useYn("1")
+                        .useYn(Constants.USE_YN_TRUE)
                         .regDtm(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
@@ -210,7 +213,7 @@ public class ProductService {
                             .productInfo(productInfo)
                             .managementFileName(fileName)
                             .realFileName(image.getOriginalFilename())
-                            .useYn("1")
+                            .useYn(Constants.USE_YN_TRUE)
                             .regDtm(LocalDateTime.now())
                             .build();
                 })
