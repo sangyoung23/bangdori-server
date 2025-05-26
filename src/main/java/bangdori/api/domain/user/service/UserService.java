@@ -2,8 +2,8 @@ package bangdori.api.domain.user.service;
 
 import bangdori.api.comm.Constants;
 import bangdori.api.domain.user.repository.UserRepository;
-import bangdori.api.domain.user.dto.UserInfoDto;
-import bangdori.api.domain.user.dto.UserUpdateDto;
+import bangdori.api.domain.user.dto.UserInfoDTO;
+import bangdori.api.domain.user.dto.UserUpdateDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserInfoDto authenticate(String id, String password) {
+    public UserInfoDTO authenticate(String id, String password) {
         UserInfo userInfo = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
@@ -34,12 +34,12 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        return UserInfoDto.fromEntity(userInfo);
+        return UserInfoDTO.fromEntity(userInfo);
 
     }
 
     @Transactional
-    public void updateUserForm(UserUpdateDto userUpdateDto) {
+    public void updateUserForm(UserUpdateDTO userUpdateDto) {
         UserInfo userInfo = userRepository.findById(userUpdateDto.getUserNo())
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자 번호입니다."));
 
@@ -64,15 +64,15 @@ public class UserService {
 
     }
 
-    public UserInfoDto getUserById(String id) {
+    public UserInfoDTO getUserById(String id) {
         Optional<UserInfo> userInfo = userRepository.findById(id);
 
         if(userInfo.isPresent()){
 
-            return new ObjectMapper().convertValue(userInfo.getClass(), UserInfoDto.class);
+            return new ObjectMapper().convertValue(userInfo.getClass(), UserInfoDTO.class);
 
         } else {
-            return new UserInfoDto();
+            return new UserInfoDTO();
         }
 
     }
