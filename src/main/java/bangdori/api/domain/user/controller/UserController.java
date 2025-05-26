@@ -28,11 +28,9 @@ public class UserController {
         String id = request.getId();
         byte[] decodedBytes = Base64.getDecoder().decode(request.getPassword());
         String password = new String(decodedBytes);
-        // 사용자 인중
+
         UserInfoDTO userInfoDto = userService.authenticate(id, password);
 
-
-        // JWT 토근 생성
         String token = tokenProvider.createToken(userInfoDto.toAuthentication(),userInfoDto.getUserNo());
 
         return new ApiResponse()
