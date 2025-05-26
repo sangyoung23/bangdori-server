@@ -14,7 +14,6 @@ public class  UserPublicInfoDTO {
     private Long userNo;
     private String name;
 
-    // UserInfo 엔티티에서 필요한 필드만 추출
     public static UserPublicInfoDTO fromEntity(UserInfo userInfo) {
         return new UserPublicInfoDTO(userInfo.getUserNo(), userInfo.getName());
     }

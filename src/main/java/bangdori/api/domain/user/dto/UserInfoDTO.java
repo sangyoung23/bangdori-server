@@ -19,7 +19,7 @@ import java.util.List;
 public class UserInfoDTO {
 
     private Long userNo;
-    private Long corpNo;  // 외래키 'CORP_NO'만 필요
+    private Long corpNo;
     private String corpNm;
     private String roleCd;
     private String statusCd;
@@ -28,23 +28,12 @@ public class UserInfoDTO {
     private String name;
     private String phoneNo;
 
-    /**
-     * Authentication 객체를 생성하는 메소드
-     * UserInfoDto에서 권한 정보(roleCd)를 기반으로 Authentication 객체 생성
-     */
     public Authentication toAuthentication() {
-        // roleCd를 권한 리스트로 변환
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(roleCd));
 
-        // Authentication 객체 생성
         return new UsernamePasswordAuthenticationToken(id, pwd, authorities);
     }
 
-    /**
-     * UserInfo 엔티티를 UserInfoDto로 변환하는 메소드
-     * @param userInfo 변환할 UserInfo 엔티티
-     * @return UserInfoDto 객체
-     */
     public static UserInfoDTO fromEntity(UserInfo userInfo) {
         UserInfoDTO dto = new UserInfoDTO();
         dto.setUserNo(userInfo.getUserNo());
