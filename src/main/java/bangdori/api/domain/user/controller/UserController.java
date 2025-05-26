@@ -3,6 +3,7 @@ package bangdori.api.domain.user.controller;
 import bangdori.api.comm.response.ApiResponse;
 import bangdori.api.comm.jwt.TokenProvider;
 import bangdori.api.domain.user.dto.UserInfoDTO;
+import bangdori.api.domain.user.dto.UserRequestDTO;
 import bangdori.api.domain.user.dto.UserUpdateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +24,9 @@ public class UserController {
 
     // 로그인
     @PostMapping("/auth/login")
-    public ApiResponse Login(@RequestBody Map<String, String> params) {
-        String id = params.get("id");
-        byte[] decodedBytes = Base64.getDecoder().decode(params.get("password"));
+    public ApiResponse Login(@RequestBody UserRequestDTO request) {
+        String id = request.getId();
+        byte[] decodedBytes = Base64.getDecoder().decode(request.getPassword());
         String password = new String(decodedBytes);
         // 사용자 인중
         UserInfoDTO userInfoDto = userService.authenticate(id, password);
