@@ -2,8 +2,8 @@ package bangdori.api.domain.user.controller;
 
 import bangdori.api.comm.response.ApiResponse;
 import bangdori.api.comm.jwt.TokenProvider;
-import bangdori.api.domain.user.dto.UserInfoDto;
-import bangdori.api.domain.user.dto.UserUpdateDto;
+import bangdori.api.domain.user.dto.UserInfoDTO;
+import bangdori.api.domain.user.dto.UserUpdateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import bangdori.api.domain.user.service.UserService;
@@ -28,7 +28,7 @@ public class UserController {
         byte[] decodedBytes = Base64.getDecoder().decode(params.get("password"));
         String password = new String(decodedBytes);
         // 사용자 인중
-        UserInfoDto userInfoDto = userService.authenticate(id, password);
+        UserInfoDTO userInfoDto = userService.authenticate(id, password);
 
 
         // JWT 토근 생성
@@ -48,7 +48,7 @@ public class UserController {
 
     // 회원 정보 수정
     @PutMapping("/{userNo}")
-    public ApiResponse updateUserInfo(@PathVariable Long userNo ,@RequestBody UserUpdateDto userUpdateDto) {
+    public ApiResponse updateUserInfo(@PathVariable Long userNo ,@RequestBody UserUpdateDTO userUpdateDto) {
             userUpdateDto.setUserNo(userNo);
             userService.updateUserForm(userUpdateDto);
             return new ApiResponse().success();
