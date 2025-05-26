@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class    UserInfoDto {
+public class UserInfoDTO {
 
     private Long userNo;
     private Long corpNo;  // 외래키 'CORP_NO'만 필요
@@ -45,8 +45,8 @@ public class    UserInfoDto {
      * @param userInfo 변환할 UserInfo 엔티티
      * @return UserInfoDto 객체
      */
-    public static UserInfoDto fromEntity(UserInfo userInfo) {
-        UserInfoDto dto = new UserInfoDto();
+    public static UserInfoDTO fromEntity(UserInfo userInfo) {
+        UserInfoDTO dto = new UserInfoDTO();
         dto.setUserNo(userInfo.getUserNo());
         dto.setCorpNo(userInfo.getCorpInfo().getCorpNo());
         dto.setCorpNm(userInfo.getCorpInfo().getCorpNm());
