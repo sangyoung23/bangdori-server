@@ -1,8 +1,18 @@
 # 운영
+server:
+  port: "8080"
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      force: true
+  error:
+    include-stacktrace: always
+    include-trace-on-error: true
 
 spring:
   application:
-    name: bangdori
+    name: bangdori_prod
   web:
     resources:
       static-locations: classpath:/static/
