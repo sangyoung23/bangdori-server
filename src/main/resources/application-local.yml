@@ -1,6 +1,18 @@
+# 로컬
+server:
+  port: "8080"
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      force: true
+  error:
+    include-stacktrace: always
+    include-trace-on-error: true
+
 spring:
   application:
-    name: bangdori
+    name: bangdori_local
   web:
     resources:
       static-locations: classpath:/static/
@@ -29,9 +41,3 @@ spring:
       idle-timeout: 600000
       max-lifetime: 18000000
       leak-detection-threshold: 1000000
-
-env:
-  serverUrl: "http://bangdori.com/"
-
-path:
-  image: "/home/bangdoriImg"
