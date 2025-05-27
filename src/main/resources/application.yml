@@ -1,14 +1,4 @@
 # 공통 설정
-server:
-  port: "8080"
-  servlet:
-    context-path: /api
-    encoding:
-      charset: UTF-8
-      force: true
-  error:
-    include-stacktrace: always
-    include-trace-on-error: true
 
 # 로깅 설정
 #logging:
