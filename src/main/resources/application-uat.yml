@@ -18,7 +18,7 @@ spring:
       static-locations: classpath:/static/
   jpa:
     hibernate:
-      ddl-auto: create # TODO: 최초 한번 생성 후 validate 수정
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
