@@ -13,7 +13,7 @@ import java.util.List;
 public interface ProductImageInfoRepository extends JpaRepository<ProductImageInfo, Long> {
     List<ProductImageInfo> findByProductInfoProdNoAndUseYn(Long prodNo, String useYn);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE ProductImageInfo pi SET pi.useYn = :useYn WHERE pi.managementFileName = :managementFileName")
     int updateUseYnByRealFileName(@Param("managementFileName") String managementFileName, @Param("useYn") String useYn);
 }

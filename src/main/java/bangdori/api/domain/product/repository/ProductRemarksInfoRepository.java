@@ -11,7 +11,7 @@ import java.util.List;
 public interface ProductRemarksInfoRepository extends JpaRepository<ProductRemarksInfo, Long> {
     List<ProductRemarksInfo> findByProductInfoProdNo(Long prodNo);
 
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE ProductRemarksInfo r SET r.useYn = :useYn WHERE r.productInfo.prodNo = :prodNo")
     int updateUseYnByProdNo(@Param("prodNo") Long prodNo, @Param("useYn") String useYn);
 
