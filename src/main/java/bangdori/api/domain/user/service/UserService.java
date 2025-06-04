@@ -53,7 +53,6 @@ public class UserService {
             userInfo.updateUserPwd(passwordEncoder.encode(userUpdateDto.getPwd()));
         }
 
-        userRepository.save(userInfo);
     }
 
     public Map<String, Object> getUsers() {

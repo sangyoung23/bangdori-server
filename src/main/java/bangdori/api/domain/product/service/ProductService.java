@@ -128,8 +128,6 @@ public class ProductService {
 
         product.updateNewDtm();
         product.updateChgUserId(user.getUserNo());
-
-        productRepository.save(product);
     }
 
     @Transactional
