@@ -52,8 +52,6 @@ public class UserService {
         if (userUpdateDto.getPwd() != null && !userUpdateDto.getPwd().isEmpty()) {
             userInfo.updateUserPwd(passwordEncoder.encode(userUpdateDto.getPwd()));
         }
-
-        userRepository.save(userInfo);
     }
 
     public Map<String, Object> getUsers() {
