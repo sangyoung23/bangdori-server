@@ -1,6 +1,7 @@
 package bangdori.api.domain.product.dto;
 
 import bangdori.api.domain.product.entity.ProductInfo;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,7 +48,10 @@ public class ProductDTO {
     private String prodDtlAddr;
     private Long prodMngUser;
     private LocalDateTime newDtm;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime regDtm;
+
     private Long regUserId;
     private Long chgUserId;
 
