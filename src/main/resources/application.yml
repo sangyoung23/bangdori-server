@@ -1,0 +1,29 @@
+# 공통 설정
+
+# 로깅 설정
+#logging:
+#  level:
+#    root: debug
+#    jdbc:
+#      audit: off
+#      connection: off
+#      resultset: debug
+#      resultsettable: debug
+#      sqlonly: debug
+#      sqltiming: debug
+
+spring:
+  multipart:
+    enabled: true
+    max-file-size: 50MB
+    max-request-size: 50MB
+  web:
+    resources:
+      static-locations: classpath:/static/
+  config:
+    import: optional:file:.env[.properties]
+
+jwt:
+  header: Authorization
+  secret: ${JWT_SECRET_KEY}
+  token-validity-in-seconds: 36000

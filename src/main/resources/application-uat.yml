@@ -1,0 +1,49 @@
+# UAT
+server:
+  port: "8081"
+  servlet:
+    context-path: /uat/api
+    encoding:
+      charset: UTF-8
+      force: true
+  error:
+    include-stacktrace: always
+    include-trace-on-error: true
+
+spring:
+  application:
+    name: bangdori_uat
+  web:
+    resources:
+      static-locations: classpath:/static/
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        show_sql: false
+        format_sql: false
+        use_sql_comments: false
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${UAT_DB_URL}
+    username: ${UAT_DB_USERNAME}
+    password: ${UAT_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 5000
+      connection-init-sql: select 1
+      validation-timeout: 2000
+      minimum-idle: 1
+      idle-timeout: 600000
+      max-lifetime: 18000000
+      leak-detection-threshold: 1000000
+
+env:
+  serverUrl: "http://bangdori.com:8081/uat"
+
+path:
+  image: "/home/bangdoriImg-uat"

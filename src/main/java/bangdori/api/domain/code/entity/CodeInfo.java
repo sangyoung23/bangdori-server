@@ -1,0 +1,30 @@
+package bangdori.api.domain.code.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+
+@Getter
+@Entity
+@Table(name = "tb_code_info")
+public class CodeInfo {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "SEQ_NO", nullable = false)
+    private Long seqNo;
+
+    @Column(name = "COMM_CD", length = 10, nullable = false)
+    private String commCd;
+
+    @Column(name = "DTL_CD", length = 10, nullable = false)
+    private String dtlCd;
+
+    @Column(name = "CD_NM", length = 50, nullable = false)
+    private String cdNm;
+
+    @Column(name = "ORD")
+    private Integer ord;
+
+    @Column(name = "USE_YN", length = 1, nullable = false)
+    private String useYn;
+}
