@@ -47,6 +47,8 @@ public class ProductDTO {
     private String prodRoadAddr;
     private String prodDtlAddr;
     private Long prodMngUser;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime newDtm;
 
     @JsonFormat(pattern = "yyyy-MM-dd")

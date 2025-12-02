@@ -41,3 +41,9 @@ spring:
       idle-timeout: 600000
       max-lifetime: 18000000
       leak-detection-threshold: 1000000
+
+env:
+  serverUrl: "localhost:8080"
+
+path:
+  image: "/Users/sangyong/Desktop/sangyong/bangdori/backend"
