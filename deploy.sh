@@ -16,7 +16,7 @@ DEPLOY_LOG="${LOG_DIR}/deploy_${TIMESTAMP}.log"
 mkdir -p "${BACKUP_DIR}"
 mkdir -p "${LOG_DIR}"
 
-# 배포 로그에 출력 남기기
+# 배포 로그 파일에 모든 출력 쌓기
 exec > >(tee -a "${DEPLOY_LOG}") 2>&1
 
 echo "[INFO] BUILD_WAR=${BUILD_WAR}"
@@ -41,16 +41,16 @@ fi
 cp "${BUILD_WAR}" "${DEPLOY_DIR}/${WAR_NAME}"
 echo "[INFO] 새 WAR 배포 경로로 복사 완료."
 
-# 4) 기존 프로세스 죽이기 (원래 stop.sh 로 하던 것과 동일)
+# 4) 기존 프로세스 종료
 echo "[INFO] 기존 프로세스 종료 중..."
 pkill -f "${WAR_NAME}" && echo "[INFO] 프로세스 종료 완료." || echo "[INFO] 종료할 프로세스 없음."
 sleep 3
 
-# 5) "지금 수동으로 잘 되는 방식" 그대로 실행
-echo "[INFO] 애플리케이션 시작 (직접 java -jar 방식)..."
+# 5) 애플리케이션 시작 (완전히 백그라운드로 분리)
+echo "[INFO] 애플리케이션 시작..."
 cd "${DEPLOY_DIR}"
 
-# 필요하면 .env 로드 (기존 start.sh처럼)
+# .env 로드 (원래 start.sh에서 하던 것과 동일)
 if [ -f "${DEPLOY_DIR}/.env" ]; then
   echo "[INFO] 환경 변수 로드 중 (.env)"
   set -a
@@ -58,19 +58,17 @@ if [ -f "${DEPLOY_DIR}/.env" ]; then
   set +a
 fi
 
+# *** 핵심: nohup + & 로 Jenkins와 완전히 분리 ***
 nohup java -jar "${WAR_NAME}" --spring.profiles.active=prod \
-  > "${DEPLOY_DIR}/application.log" 2>&1 &
+  >> "${DEPLOY_DIR}/application.log" 2>&1 &
 
 NEW_PID=$!
 echo "[INFO] 새 프로세스 PID: ${NEW_PID}"
 
-# 6) 상태 확인 + 최근 로그 조금 보여주기
 sleep 3
+
 echo "[INFO] 현재 java 프로세스 목록:"
 ps -ef | grep "${WAR_NAME}" | grep -v grep || echo "[WARN] 프로세스 안 떠있음"
-
-echo "[INFO] 최근 application.log:"
-tail -n 50 "${DEPLOY_DIR}/application.log" || echo "[INFO] application.log 없음"
 
 echo "===== DEPLOY END: $(date '+%Y-%m-%d %H:%M:%S') ====="
 
