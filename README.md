@@ -58,7 +58,8 @@ backend/
 
 ### 🗃 DB 구조 및 ERD
 
-![스크린샷_2025-05-24_오후_10.40.25](/uploads/35e36258fb59d07bb90af04eb10a63a3/스크린샷_2025-05-24_오후_10.40.25.png)
+<img width="1470" height="891" alt="방도리 ERD" src="https://github.com/user-attachments/assets/c822a68a-e031-4a59-9d36-a81352ac5c0b" />
+
 
 ### 🚀 배포 및 운영
 #### 환경:
